@@ -67,7 +67,6 @@ $('.season select').on("change",function() {
 
 //Сокрытие селектов при определенном значении селекта категории товаров
 let chose_form = $('.chose-form select').val();
-console.log(chose_form);
 if(chose_form === 'Общее') {
 	$(".general").css("display", "block");
 $(".tare").css("display", "none");
