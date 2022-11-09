@@ -12,26 +12,26 @@ while ($item = $usersData->Fetch()) {
 	<div class="row">
 		<div class="col-6 text-center align-items-center justify-content-center" style="overflow: hidden;">
 			<select id="Users" class="selectpicker"
-					data-width="fit"
-					data-live-search="true"
-					data-container="body"
-					data-size="7"
-					multiple
-					data-actions-box="true"
-					data-selected-text-format="count"
-					data-none-selected-text="Выбор пользователей"
-					data-deselect-all-text="Убрать всех"
-					data-select-all-text="Выбрать всех"
-					data-none-results-text="Ничего не найдено {0}"
-					data-count-selected-text="Выбрано {0} (из {1})">
+			        data-width="fit"
+			        data-live-search="true"
+			        data-container="body"
+			        data-size="7"
+			        multiple
+			        data-actions-box="true"
+			        data-selected-text-format="count"
+			        data-none-selected-text="Выбор пользователей"
+			        data-deselect-all-text="Убрать всех"
+			        data-select-all-text="Выбрать всех"
+			        data-none-results-text="Ничего не найдено {0}"
+			        data-count-selected-text="Выбрано {0} (из {1})">
 
-<?php
-foreach ($fio as $key => $value) {
-	echo "<option value='$key'>" . $value . "</option>";
-}
-?>
+				<?php
+				foreach ($fio as $key => $value) {
+					echo "<option value='$key'>" . $value . "</option>";
+				}
+				?>
 
-</select>
+			</select>
 		</div>
 		<button id="addUsers" type="button" class="btn btn-info col-6" disabled data-bs-toggle="button">
 			Добавить выбранных пользователей
@@ -40,19 +40,19 @@ foreach ($fio as $key => $value) {
 	<div class="row">
 		<ul class="user_list list-group mt-3">
 
-<?php
-$fd = fopen("usersList/usersList.json", 'r') or die("не удалось открыть файл");
-$usersList = null;
-while (!feof($fd)) {
-	$usersList = json_decode(fgets($fd), true);
-}
-fclose($fd);
+			<?php
+			$fd = fopen("usersList/usersList.json", 'r') or die("не удалось открыть файл");
+			$usersList = null;
+			while (!feof($fd)) {
+				$usersList = json_decode(fgets($fd), true);
+			}
+			fclose($fd);
 
-$count = count($usersList);
-for ($i = 0; $i < $count; $i++) {
-	$value = $usersList[$i]['id'];
-	$text = $usersList[$i]['name'];
-	echo "<li class='list-group-item d-flex justify-content-start align-items-center row' id='$value' value='$value'>
+			$count = count($usersList);
+			for ($i = 0; $i < $count; $i++) {
+				$value = $usersList[$i]['id'];
+				$text = $usersList[$i]['name'];
+				echo "<li class='list-group-item d-flex justify-content-start align-items-center row' id='$value' value='$value'>
 					<div class='user col-6 d-flex justify-content-between'>
 						<button id='closeB' type='button' class='btn-close' aria-label='Close'></button>
 						<p class='mb-0 text-center'>$text</p>
@@ -70,11 +70,10 @@ for ($i = 0; $i < $count; $i++) {
 						<input type='text' class='form-control' id='drink'>
 					</div>
 				</li>";
-}
-?>
+			}
+			?>
 
-</ul>
+		</ul>
 	</div>
 </div>
-<script type="text/javascript" src="js/setUsers.js"></script>
 

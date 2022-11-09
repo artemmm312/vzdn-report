@@ -32,29 +32,10 @@
 	</div>
 </div>
 <script type="text/javascript" src="js/setting.js"></script>
+<script type="text/javascript" src="js/setUsers.js"></script>
 
 <?php
 \Bitrix\Main\Loader::includeModule('crm');
-
-$Deals = CCrmDeal::GetListEx([],
-	['ASSIGNED_BY_ID' => 23, 'BEGINDATE' => '28.10.2022'],
-	false,
-	false,
-	[]);
-
-$dealData = [];
-while ($record = $Deals->Fetch()) {
-	$dealData['ID'] = $record['ID'];
-}
-
-$products = CCrmDeal::LoadProductRows($dealData['ID']);
-
-$countProduct = 0;
-foreach ($products as $key => $value) {
-	$countProduct += $value['QUANTITY'];
-}
-
-$test = CCrmProduct::GetByID(319);
 
 function pr($var)
 {
@@ -65,13 +46,40 @@ function pr($var)
 	$int++;
 }
 
-$test2 = CCrmProduct::GetList($arOrder = array(), $arFilter = array('ID' => 44), $arSelectFields = array(), $arNavStartParams = false, $arGroupBy = false);
+$fd = fopen("usersList/usersList.json", 'r') or die("не удалось открыть файл");
+$usersList = null;
+while (!feof($fd)) {
+	$usersList = json_decode(fgets($fd), true);
+}
+fclose($fd);
+
+pr($usersList);
+
+$Deals = CCrmDeal::GetListEx([],
+	['ASSIGNED_BY_ID' => 23, 'ID' => 313],
+	false,
+	false,
+	[]);
+
+$dealData = [];
+while ($record = $Deals->Fetch()) {
+	$dealData[record['ID']] = $record;
+}
+
+$products = CCrmDeal::LoadProductRows(313);
+$countProduct = 0;
+foreach ($products as $key => $value) {
+	$countProduct += $value['QUANTITY'];
+}
+
+//$test = CCrmProduct::GetByID(319);
+//$test2 = CCrmProduct::GetList($arOrder = array(), $arFilter = array('ID' => 44), $arSelectFields = array(), $arNavStartParams = false, $arGroupBy = false);
 
 pr($dealData);
 pr($products);
 pr($countProduct);
-pr($test);
-pr($test2);
+//pr($test);
+//pr($test2);
 
 
 ?>
