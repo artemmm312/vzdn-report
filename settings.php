@@ -13,22 +13,6 @@
 				        aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<div class="test row mb-3">
-					<div class="date-test col-4">
-						<select class="selectpicker" multiple data-size="10">
-							<optgroup label="Месяц" data-max-options="1">
-							</optgroup>
-							<optgroup label="Квартал" data-max-options="1">
-								<option>1 квартал</option>
-								<option>2 квартал</option>
-								<option>3 квартал</option>
-								<option>4 квартал</option>
-							</optgroup>
-							<optgroup label="Год" data-max-options="1">
-							</optgroup>
-						</select>
-					</div>
-				</div>
 				<div class="chose-date row mb-3">
 					<div class="season col-4">
 						<select class="selectpicker" data-width="100%">
@@ -38,19 +22,11 @@
 						</select>
 					</div>
 					<div class="month_or_quarter col-4">
-						<select class="selectpicker" data-size="5" data-width="100%">
+						<select class="selectpicker" data-size="4" data-width="100%">
 						</select>
 					</div>
-					<!--<div class="quarter col-4">
-						<select class="selectpicker" data-width="100%">
-							<option>1 квартал</option>
-							<option>2 квартал</option>
-							<option>3 квартал</option>
-							<option>4 квартал</option>
-						</select>
-					</div>-->
 					<div class="year col-4">
-						<select class="selectpicker" data-size="5" data-width="100%">
+						<select class="selectpicker" data-size="4" data-width="100%">
 						</select>
 					</div>
 				</div>

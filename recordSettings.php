@@ -1,8 +1,9 @@
 <?php
 
-$data = $_POST['users'];
+$data = $_POST['settings'];
+var_dump($data);
 
-$filename = "usersList/usersList.json";
+$filename = "settings/lastSettings.json";
 
 $fd = fopen($filename, 'w') or die("не удалось открыть файл");
 fwrite($fd, $data);

@@ -46,14 +46,14 @@ function pr($var)
 	$int++;
 }
 
-$fd = fopen("usersList/usersList.json", 'r') or die("не удалось открыть файл");
-$usersList = null;
+$fd = fopen("settings/lastSettings.json", 'r') or die("не удалось открыть файл");
+$settings = null;
 while (!feof($fd)) {
-	$usersList = json_decode(fgets($fd), true);
+	$settings = json_decode(fgets($fd), true);
 }
 fclose($fd);
 
-pr($usersList);
+pr($settings);
 
 $Deals = CCrmDeal::GetListEx([],
 	['ASSIGNED_BY_ID' => 23, 'ID' => 313],
