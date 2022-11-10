@@ -38,10 +38,10 @@ while ($item = $usersData->Fetch()) {
 		</button>
 	</div>
 	<div class="row">
-		<ul class="user_list list-group mt-3">
+		<ul class="users_list list-group mt-3">
 
 			<?php
-			$fd = fopen("settings/lastSettings.json", 'r') or die("не удалось открыть файл");
+/*			$fd = fopen("settings/lastSettings.json", 'r') or die("не удалось открыть файл");
 			$settings = null;
 			while (!feof($fd)) {
 				$settings = json_decode(fgets($fd), true);
@@ -64,22 +64,22 @@ while ($item = $usersData->Fetch()) {
 				echo "<li class='list-group-item d-flex justify-content-start align-items-center row' id='$value' value='$value'>
 					<div class='user col-6 d-flex justify-content-between'>
 						<button id='closeB' type='button' class='btn-close' aria-label='Close'></button>
-						<p class='mb-0 text-center'>$text</p>
+						<p class='mb-0 text-center' id='userName'>$text</p>
 					</div>  
 					<div class='general col-3'>
 						<label for='general' class='form-label mb-0'>Общее</label>
-						<input type='text' class='form-control' id='general' value='$general'>
+						<input type='text' class='form-control' id='overall_product' value='$general'>
 					</div>
 					<div class='tare col-3'>
 						<label for='tare' class='form-label mb-0'>ПЭТ-тара</label>
-						<input type='text' class='form-control' id='tare' value='$tare'>
+						<input type='text' class='form-control' id='tare_product' value='$tare'>
 					</div>
 					<div class='drink col-3'>
 						<label for='drink' class='form-label mb-0'>Вода, напитки</label>
-						<input type='text' class='form-control' id='drink' value='$drink'>
+						<input type='text' class='form-control' id='drink_product' value='$drink'>
 					</div>
 				</li>";
-			}
+			}*/
 			?>
 
 		</ul>

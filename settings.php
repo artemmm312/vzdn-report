@@ -13,7 +13,7 @@
 				        aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<div class="chose-date row mb-3">
+				<div class="chose_date row mb-3">
 					<div class="season col-4">
 						<select class="selectpicker" id="season" data-width="100%">
 							<option>Месяц</option>
@@ -30,13 +30,13 @@
 						</select>
 					</div>
 				</div>
-				<div class="chose-form mb-3">
-					<select class="selectpicker">
+				<div class="type_of_product mb-3">
+					<select class="selectpicker" id="type_of_product">
 						<option>Общее</option>
 						<option>По категориям товара</option>
 					</select>
 				</div>
-				<div class="chose-users">
+				<div class="chose_users">
 					<?php require_once "selectUsers.php" ?>
 				</div>
 			</div>

@@ -1,119 +1,126 @@
 let now = new Date(); //текущая дата
 let now_year = now.getFullYear(); //текущий год
 
-//Объект для вывода русских названий месяцев в селект
-/*const months = {
-	"Январь": 0,
-	"Февраль": 1,
-	"Март": 2,
-	"Апрель": 3,
-	"Май": 4,
-	"Июнь": 5,
-	"Июль": 6,
-	"Август": 7,
-	"Сентябрь": 8,
-	"Октябрь": 9,
-	"Ноябрь": 10,
-	"Декабрь": 11
-};*/
 //массив месяцев
 let months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
 //массив кварталов
-const quarter = ['1 квартал', '2 квартал', '3 квартал', '4 квартал'];
+const quarter = ["1 квартал", "2 квартал", "3 квартал", "4 квартал"];
 //массив диапозона годов +-5 от текущего в селекте
 const range_for_years = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
 
+let $season = $('#season');
+let $month_or_quarter = $('#month_or_quarter');
+let $year = $('#year');
+let $type_of_product = $('#type_of_product');
+let $overall_product = $('#overall_product');
+let $tare_product = $('#tare_product');
+let $drink_product = $('#drink_product');
+
+
 //вывод годов в селект
 for (let i of range_for_years) {
-	$('.year select').append(`<option value="${now_year + i}">${now_year + i}</option>`);
+	$year.append(`<option value="${now_year + i}">${now_year + i}</option>`);
 }
 
-function chose_season(season) {
+function choseSeason(season) {
 	switch (season) {
 		case 'Месяц':
-			$(".month_or_quarter").css("display", "block");
-			$('.month_or_quarter select option').remove();
+			$('.month_or_quarter').css('display', 'block');
+			$('#month_or_quarter option').remove();
 			for (let i in months) {
-				$('.month_or_quarter select').append(`<option value="${i}">${months[i]}</option>`);
+				$('#month_or_quarter').append(`<option value="${i}">${months[i]}</option>`);
 			}
-			$('.month_or_quarter select').selectpicker('destroy');
-			$('.month_or_quarter select').selectpicker('render');
+			$('#month_or_quarter').selectpicker('destroy');
+			$('#month_or_quarter').selectpicker('render');
 			break;
 		case 'Квартал':
-			$(".month_or_quarter").css("display", "block");
-			$('.month_or_quarter select option').remove();
+			$('.month_or_quarter').css('display', 'block');
+			$('#month_or_quarter option').remove();
 			for (let i in quarter) {
-				$('.month_or_quarter select').append(`<option value="${i}">${quarter[i]}</option>`);
+				$("#month_or_quarter").append(`<option value="${i}">${quarter[i]}</option>`);
 			}
-			$('.month_or_quarter select').selectpicker('destroy');
-			$('.month_or_quarter select').selectpicker('render');
+			$('#month_or_quarter').selectpicker('destroy');
+			$('#month_or_quarter').selectpicker('render');
 			break;
 		case 'Год':
-			$(".month_or_quarter").css("display", "none");
+			$('.month_or_quarter').css('display', 'none');
 			break;
 	}
 }
 
 //текущее значение выбора периода (месяц, квартал, год)
-chose_season($('.season select').val());
+choseSeason($('#season').val());
 //динамичное значение выбора периода (месяц, квартал, год)
-$('.season select').on('change', function () {
-	chose_season($(this).val());
+$('#season').on('change', function () {
+	choseSeason($(this).val());
 })
 
 
-function chose_form(form) {
-	switch (form) {
+function choseTypeProduct(type) {
+	switch (type) {
 		case 'Общее':
-			$(".general").css("display", "block");
-			$(".tare").css("display", "none");
-			$(".drink").css("display", "none");
+			$('.overall_product').css('display', 'block');
+			$('.tare_product').css('display', 'none');
+			$('.drink_product').css('display', 'none');
 			break;
 		case 'По категориям товара':
-			$(".tare").css("display", "block");
-			$(".drink").css("display", "block");
-			$(".general").css("display", "none");
+			$('.overall_product').css('display', 'none');
+			$('.tare_product').css('display', 'block');
+			$('.drink_product').css('display', 'block');
 			break;
 	}
 }
 
 //текущее значение выбора категории товаров
-chose_form($('.chose-form select').val());
+choseTypeProduct($('#type_of_product').val());
 //динамическое сокрытие
-$('.chose-form select').on("change", function () {
-	chose_form($(this).val());
+$('#type_of_product').on('change', function () {
+	choseTypeProduct($(this).val());
 });
 
-function tt() {
+function getSettings() {
 	$.ajax({
 		type: 'POST',
 		url: 'getSettings.php',
 		success: function (response) {
-			//console.log(jQuery.parseJSON(response));
 			let data = jQuery.parseJSON(response);
-			let test = data[0];
-			let test2 = data[1];
-			console.log(test);
-			console.log(test2);
-			console.log(test.season);
-			//chose_season(test.season);
-			console.log($(`#season option[value=${test.season}]`));
-			//$(`#season option[value=${test.season}]`).prop('selected', true);
-			$('#season').selectpicker('val', test.season);
-			chose_season($('#season').val());
-			$('#month_or_quarter').selectpicker('val', test.season_range);
-			/*$('#month_or_quarter').val(test.season_range).change();
-			$('#month_or_quarter').selectpicker('destroy');
-			$('#month_or_quarter').selectpicker('render');*/
-			$('#year').selectpicker('val', test.year);
-			//$('#season').selectpicker('refresh');
-			//$('.season select').selectpicker('destroy');
-			//$('.season select').selectpicker('render');
+			let over_settings = data[0];
+			let users_settings = data[1];
+			console.log(over_settings);
+			console.log(users_settings);
+
+			$('#season').selectpicker('val', over_settings.season);
+			choseSeason($('#season').val());
+			$('#month_or_quarter').selectpicker('val', over_settings.month_or_quarter);
+			$('#year').selectpicker('val', over_settings.year);
+			$('#type_of_product').selectpicker('val', over_settings.type_of_product);
+
+			for (let i = 0; i < users_settings.length; i++) {
+				$('.users_list').append(`<li class="list-group-item d-flex justify-content-start align-items-center row" id="${users_settings[i].id}" value="${users_settings[i].id}">
+				<div class="user col-6 d-flex justify-content-between">
+					<button id="deleteUser" type="button" class="btn-close" aria-label="remove user from the list"></button>
+					<p class="mb-0 text-center" id="userName">${users_settings[i].name}</p>
+				</div>  
+			  <div class="overall_product col-3">
+			    <label for="overall_product" class="form-label mb-0">Общее</label>
+			    <input type="text" class="form-control" id="overall_product" value="${users_settings[i].general}">
+			  </div>
+			  <div class="tare_product col-3">
+			    <label for="tare_product" class="form-label mb-0">ПЭТ-тара</label>
+			    <input type="text" class="form-control" id="tare_product" value="${users_settings[i].tare}">
+			  </div>
+			  <div class="drink_product col-3">
+			    <label for="drink_product" class="form-label mb-0">Вода, напитки</label>
+			    <input type="text" class="form-control" id="drink_product" value="${users_settings[i].drink}">
+			  </div>
+			</li>`);
+			}
+			choseTypeProduct($('#type_of_product').val());
 		},
 	})
 }
 
-tt();
+getSettings();
 //$(document).ready(function () {});
 
 var usersID = [];
@@ -123,9 +130,9 @@ var users = [];
 // запись в массив порльзовыателей из списка
 function pushUsers() {
 	users.length = 0;
-	let length = $('.user_list li').length;
+	let length = $('.users_list li').length;
 	for (let i = 0; i < length; i++) {
-		users.push({id: $('.user_list li').eq(i).val(), name: $('.user_list li p').eq(i).text()});
+		users.push({id: $('.users_list li').eq(i).val(), name: $('.users_list li p').eq(i).text()});
 	}
 }
 
@@ -145,24 +152,24 @@ disOption();
 
 //сохнанение настроек
 function saveSettings() {
-	let options = {
-		'season': $('.season select').val(),
-		'season_range': $('.month_or_quarter select').val(),
-		'year': $('.year select').val(),
-		'form': $('.chose-form select').val(),
+	let over_settings = {
+		'season': $('#season').val(),
+		'month_or_quarter': $('#month_or_quarter').val(),
+		'year': $('#year').val(),
+		'type_of_product': $('#type_of_product').val(),
 	};
-	let userData = [];
-	for (let key of $('.user_list li')) {
-		let date = {
+	let users_settings = [];
+	for (let key of $('.users_list li')) {
+		let options = {
 			'id': $(key).val(),
-			'name': $(key).find('p').text(),
-			'general': $(key).find('#general').val(),
-			'tare': $(key).find('#tare').val(),
-			'drink': $(key).find('#drink').val(),
+			'name': $(key).find('#userName').text(),
+			'overall_product': $(key).find('#overall_product').val(),
+			'tare_product': $(key).find('#tare_product').val(),
+			'drink_product': $(key).find('#drink_product').val(),
 		}
-		userData.push(date);
+		users_settings.push(options);
 	}
-	let settings = [options, userData];
+	let settings = [over_settings, users_settings];
 	console.log(settings);
 	$.ajax({
 		type: 'POST',
@@ -187,63 +194,42 @@ $('#addUsers').on('click', function () {
 		names.push($(`#Users option[value=${usersID[i]}]`).text()) //массив фио выбранных пользователей
 	}
 	for (let i = 0; i < names.length; i++) {
-		$('.user_list').append(`<li class='list-group-item d-flex justify-content-start align-items-center row' id="${usersID[i]}" value="${usersID[i]}">
-				<div class='user col-6 d-flex justify-content-between'>
-					<button id='closeB' type='button' class='btn-close' aria-label='Close'></button>
-					<p class='mb-0 text-center'>${names[i]}</p>
+		$('.users_list').append(`<li class="list-group-item d-flex justify-content-start align-items-center row" id="${usersID[i]}" value="${usersID[i]}">
+				<div class="user col-6 d-flex justify-content-between">
+					<button id="deleteUser" type="button" class="btn-close" aria-label="remove user from the list"></button>
+					<p class="mb-0 text-center" id="userName">${names[i]}</p>
 				</div>  
-			  <div class='general col-3'>
-			    <label for='general' class='form-label mb-0'>Общее</label>
-			    <input type='text' class='form-control' id='general'>
+			  <div class="overall_product col-3">
+			    <label for="overall_product" class="form-label mb-0">Общее</label>
+			    <input type="text" class="form-control" id="overall_product">
 			  </div>
-			  <div class='tare col-3'>
-			    <label for='tare' class='form-label mb-0'>ПЭТ-тара</label>
-			    <input type='text' class='form-control' id='tare'>
+			  <div class="tare_product col-3">
+			    <label for="tare_product" class="form-label mb-0">ПЭТ-тара</label>
+			    <input type="text" class="form-control" id="tare_product">
 			  </div>
-			  <div class='drink col-3'>
-			    <label for='drink' class='form-label mb-0'>Вода, напитки</label>
-			    <input type='text' class='form-control' id='drink'>
+			  <div class="drink_product col-3">
+			    <label for="drink_product" class="form-label mb-0">Вода, напитки</label>
+			    <input type="text" class="form-control" id="drink_product">
 			  </div>
 			</li>`);
 	}
-	chose_form($('.chose-form select').val());
+	choseTypeProduct($('.type_of_product select').val());
 	names.length = 0;
 	$('#Users').selectpicker('deselectAll');
 	pushUsers();
 	disOption();
-	//updateUsers();
 });
 
-$('.user_list').on('click', 'li #closeB', function () { //удаление пользователей
+//удаление пользователей из списка
+$('.users_list').on('click', 'li #deleteUser', function () {
 	$(this).parent().parent().remove();
 	pushUsers();
 	disOption();
-	//updateUsers();
 });
 
 $('#apply').on('click', function () {
 	saveSettings();
 });
 
-/*function tt() {
-	$.ajax({
-		type: 'POST',
-		url: 'getSettings.php',
-		success: function (response) {
-			//console.log(jQuery.parseJSON(response));
-			let data = jQuery.parseJSON(response);
-			let test = data[0];
-			let test2 = data[1];
-			console.log(test);
-			console.log(test2);
-			if(test.season === 'Квартал') {
-				$('.season select').find(find(`[value=${test.season}]`)).prop('selected');
-				/!*$('.season select').selectpicker('destroy');
-				$('.season select').selectpicker('render');*!/
-			}
-		},
-	})
-}
-tt();*/
 
 
