@@ -15,18 +15,18 @@
 			<div class="modal-body">
 				<div class="chose-date row mb-3">
 					<div class="season col-4">
-						<select class="selectpicker" data-width="100%">
+						<select class="selectpicker" id="season" data-width="100%">
 							<option>Месяц</option>
 							<option>Квартал</option>
 							<option>Год</option>
 						</select>
 					</div>
 					<div class="month_or_quarter col-4">
-						<select class="selectpicker" data-size="4" data-width="100%">
+						<select class="selectpicker" id="month_or_quarter" data-size="4" data-width="100%">
 						</select>
 					</div>
 					<div class="year col-4">
-						<select class="selectpicker" data-size="4" data-width="100%">
+						<select class="selectpicker" id="year" data-size="4" data-width="100%">
 						</select>
 					</div>
 				</div>

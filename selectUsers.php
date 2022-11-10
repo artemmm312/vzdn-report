@@ -54,7 +54,7 @@ while ($item = $usersData->Fetch()) {
 
 
 			$count = count(test2);
-			var_dump($test2);
+			//var_dump($test2);
 			for ($i = 0; $i < $count; $i++) {
 				$value = $test2[$i]['id'];
 				$text = $test2[$i]['name'];

@@ -16,10 +16,10 @@ let now_year = now.getFullYear(); //текущий год
 	"Ноябрь": 10,
 	"Декабрь": 11
 };*/
+//массив месяцев
 let months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-
+//массив кварталов
 const quarter = ['1 квартал', '2 квартал', '3 квартал', '4 квартал'];
-
 //массив диапозона годов +-5 от текущего в селекте
 const range_for_years = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
 
@@ -84,6 +84,36 @@ $('.chose-form select').on("change", function () {
 	chose_form($(this).val());
 });
 
+function tt() {
+	$.ajax({
+		type: 'POST',
+		url: 'getSettings.php',
+		success: function (response) {
+			//console.log(jQuery.parseJSON(response));
+			let data = jQuery.parseJSON(response);
+			let test = data[0];
+			let test2 = data[1];
+			console.log(test);
+			console.log(test2);
+			console.log(test.season);
+			//chose_season(test.season);
+			console.log($(`#season option[value=${test.season}]`));
+			//$(`#season option[value=${test.season}]`).prop('selected', true);
+			$('#season').selectpicker('val', test.season);
+			chose_season($('#season').val());
+			$('#month_or_quarter').selectpicker('val', test.season_range);
+			/*$('#month_or_quarter').val(test.season_range).change();
+			$('#month_or_quarter').selectpicker('destroy');
+			$('#month_or_quarter').selectpicker('render');*/
+			$('#year').selectpicker('val', test.year);
+			//$('#season').selectpicker('refresh');
+			//$('.season select').selectpicker('destroy');
+			//$('.season select').selectpicker('render');
+		},
+	})
+}
+
+tt();
 //$(document).ready(function () {});
 
 var usersID = [];
@@ -157,7 +187,6 @@ $('#addUsers').on('click', function () {
 		names.push($(`#Users option[value=${usersID[i]}]`).text()) //массив фио выбранных пользователей
 	}
 	for (let i = 0; i < names.length; i++) {
-		//$('.user_list').append(`<li id="${usersID[i]}" value="${usersID[i]}">${names[i]}<button id="closeB" type="button" class="btn-close" aria-label="Close"></button></li>`);
 		$('.user_list').append(`<li class='list-group-item d-flex justify-content-start align-items-center row' id="${usersID[i]}" value="${usersID[i]}">
 				<div class='user col-6 d-flex justify-content-between'>
 					<button id='closeB' type='button' class='btn-close' aria-label='Close'></button>
@@ -196,5 +225,25 @@ $('#apply').on('click', function () {
 	saveSettings();
 });
 
+/*function tt() {
+	$.ajax({
+		type: 'POST',
+		url: 'getSettings.php',
+		success: function (response) {
+			//console.log(jQuery.parseJSON(response));
+			let data = jQuery.parseJSON(response);
+			let test = data[0];
+			let test2 = data[1];
+			console.log(test);
+			console.log(test2);
+			if(test.season === 'Квартал') {
+				$('.season select').find(find(`[value=${test.season}]`)).prop('selected');
+				/!*$('.season select').selectpicker('destroy');
+				$('.season select').selectpicker('render');*!/
+			}
+		},
+	})
+}
+tt();*/
 
 
