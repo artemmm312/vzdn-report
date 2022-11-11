@@ -25,7 +25,7 @@
 		<div class="main">
 			<div class="progress">
 				<div class="progress-bar" role="progressbar" aria-label="Progress by goods" style="width: 25%;"
-				     aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%
+				     aria-valuenow="100" aria-valuemin="0" aria-valuemax="200">25%
 				</div>
 			</div>
 		</div>
@@ -54,31 +54,65 @@ while (!feof($fd)) {
 fclose($fd);
 
 pr($settings);
+$date = date("d.m.Y H:i:s", mktime(00, 00, 0, 9, 1, 2022));
+//var_dump($date);
+$general_settings = $settings[0];
+$first_date = null;
+$last_date = null;
+if ($general_settings['season'] === 'Квартал') {
+	$month_start = ['0' => 1, '1' => 4, '2' => 7, '3' => 10];
+	$month_end = ['0' => 4, '1' => 7, '2' => 10, '3' => 1];
+	if($general_settings['month_or_quarter'] === '3') {
+		$year = $general_settings['year'] +1;
+		$first_date = date("d.m.Y", mktime(0, 0, 0, $month_start[$general_settings['month_or_quarter']], 1, $general_settings['year']));
+		$last_date = date("d.m.Y", mktime(0, 0, 0, $month_end[$general_settings['month_or_quarter']], 1, $year));
+	} else {
+		$first_date = date("d.m.Y", mktime(0, 0, 0, $month_start[$general_settings['month_or_quarter']], 1, $general_settings['year']));
+		$last_date = date("d.m.Y", mktime(0, 0, 0, $month_end[$general_settings['month_or_quarter']], 1, $general_settings['year']));
+	}
+}
+var_dump($first_date);
+var_dump($last_date);
+
+$users_settings = $settings[1];
+$usersID = [];
+foreach ($users_settings as $key) {
+	$usersID[] = $key['id'];
+}
+
+$sections = ['44' => 'tare_product', '45' => 'drink_product'];
+pr($usersID);
+
+$filter = ['ASSIGNED_BY_ID' => $usersID, 'STAGE_ID' => 'WON', '>=CLOSEDATE' => $first_date, '<CLOSEDATE' => $last_date];
 
 $Deals = CCrmDeal::GetListEx([],
-	['ASSIGNED_BY_ID' => 23, 'ID' => 313],
+	['CATEGORY_ID' => 0, 'ASSIGNED_BY_ID' => $usersID, 'STAGE_ID' => 'WON', '>=CLOSEDATE' => $first_date, '<CLOSEDATE' => $last_date],
 	false,
 	false,
 	[]);
 
 $dealData = [];
 while ($record = $Deals->Fetch()) {
-	$dealData[record['ID']] = $record;
+	$dealData[$record['ID']] = ['ID' => $record['ID'],
+		'STAGE_ID' => $record['STAGE_ID'],
+		'OPPORTUNITY' => $record['OPPORTUNITY'],
+		'ASSIGNED_BY_ID' => $record['ASSIGNED_BY_ID'],
+		'CLOSEDATE' => $record['CLOSEDATE']];
 }
 
-$products = CCrmDeal::LoadProductRows(313);
+$products = CCrmDeal::LoadProductRows(336);
 $countProduct = 0;
 foreach ($products as $key => $value) {
 	$countProduct += $value['QUANTITY'];
 }
 
-//$test = CCrmProduct::GetByID(319);
+$test = CCrmProduct::GetByID(325);
 //$test2 = CCrmProduct::GetList($arOrder = array(), $arFilter = array('ID' => 44), $arSelectFields = array(), $arNavStartParams = false, $arGroupBy = false);
 
 pr($dealData);
 pr($products);
 pr($countProduct);
-//pr($test);
+pr($test);
 //pr($test2);
 
 

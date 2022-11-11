@@ -37,7 +37,15 @@
 					</select>
 				</div>
 				<div class="chose_users">
-					<?php require_once "selectUsers.php" ?>
+					<div class="container-fluid h-100 bg-light">
+
+						<?php require_once "selectUsers.php" ?>
+
+						<div class="row">
+							<ul class="users_list list-group mt-3">
+							</ul>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="modal-footer">

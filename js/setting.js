@@ -230,6 +230,7 @@ function saveSettings() {
 
 $('#apply').on('click', function () {
 	saveSettings();
+	location.reload();
 });
 
 
