@@ -140,9 +140,9 @@ $(document).ready(function () {
 			  </div>
 			</li>`);
 		}
-		choseTypeProduct($('.type_of_product select').val());
+		choseTypeProduct($type_of_product.val());
 		names.length = 0;
-		$('#Users').selectpicker('deselectAll');
+		$Users.selectpicker('deselectAll');
 		pushUsers();
 		disOption();
 	});
@@ -156,11 +156,11 @@ $(document).ready(function () {
 
 });
 
-//получение данных от сервера
+/*//получение данных от сервера
 function getSettings() {
 	$.ajax({
 		type: 'POST',
-		url: 'getSettings.php',
+		url: 'readSettings.php',
 		success: function (response) {
 			let data = jQuery.parseJSON(response);
 			let general_settings = data[0];
@@ -196,7 +196,7 @@ function getSettings() {
 	})
 }
 
-getSettings();
+getSettings();*/
 
 //сохнанение настроек
 function saveSettings() {

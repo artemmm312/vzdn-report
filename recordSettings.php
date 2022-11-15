@@ -1,7 +1,6 @@
 <?php
 
 $data = $_POST['settings'];
-var_dump($data);
 
 $filename = "settings/lastSettings.json";
 

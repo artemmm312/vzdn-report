@@ -25,9 +25,9 @@ while ($item = $usersData->Fetch()) {
 		        data-count-selected-text="Выбрано {0} (из {1})">
 
 			<?php
-			foreach ($fio as $key => $value) {
-				echo "<option value='$key'>" . $value . "</option>";
-			}
+				foreach ($fio as $key => $value) {
+					echo "<option value='$key'>" . $value . "</option>";
+				}
 			?>
 
 		</select>
