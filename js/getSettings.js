@@ -1,12 +1,10 @@
 let general_settings;
 let users_settings;
-/*let $month_or_quarter_option = $('#month_or_quarter option').text();
-console.log($month_or_quarter_option);*/
 
 //получение данных от сервера
 function getSettings() {
 	$.ajax({
-		type: 'POST', url: 'getSettings.php', success: function (response) {
+		type: 'POST', url: 'readSettings.php', success: function (response) {
 			let data = jQuery.parseJSON(response);
 			general_settings = data[0];
 			users_settings = data[1];
@@ -25,15 +23,15 @@ function getSettings() {
 				</div>  
 			  <div class="overall_product col-3">
 			    <label for="overall_product" class="form-label mb-0">Общее</label>
-			    <input type="text" class="form-control" id="overall_product" value="${users_settings[i].overall_product}">
+			    <input type="number" class="form-control" id="overall_product" value="${users_settings[i].overall_product}" min="0">
 			  </div>
 			  <div class="tare_product col-3">
 			    <label for="tare_product" class="form-label mb-0">ПЭТ-тара</label>
-			    <input type="text" class="form-control" id="tare_product" value="${users_settings[i].tare_product}">
+			    <input type="number" class="form-control" id="tare_product" value="${users_settings[i].tare_product}" min="0">
 			  </div>
 			  <div class="drink_product col-3">
 			    <label for="drink_product" class="form-label mb-0">Вода, напитки</label>
-			    <input type="text" class="form-control" id="drink_product" value="${users_settings[i].drink_product}">
+			    <input type="number" class="form-control" id="drink_product" value="${users_settings[i].drink_product}" min="0">
 			  </div>
 			</li>`);
 			}
@@ -49,7 +47,9 @@ function test() {
 	$.ajax({
 		type: 'POST', url: 'handler.php', success: function (response) {
 			let data = jQuery.parseJSON(response);
-			let text_of_date = $season.val() === 'Год' ? `Показатели по плану продаж за ${$year.val()} год :` : `Показатели по плану продаж за ${$month_or_quarter.find('option:selected').text()} ${$year.val()} года :`;
+			let text_of_date = $season.val() === 'Год' ?
+				`Показатели по плану продаж за ${$year.val()} год :` :
+				`Показатели по плану продаж за ${$month_or_quarter.find('option:selected').text()} ${$year.val()} года :`;
 			$('.text-date').append(text_of_date);
 			console.log(data);
 			console.log(general_settings);
@@ -59,9 +59,11 @@ function test() {
 				if (user_setting.id in data) {
 					let id = user_setting.id;
 					let name = user_setting.name;
+					let plane_of_overall_product = user_setting.overall_product;
 					let plane_of_tare_product = user_setting.tare_product;
 					let plane_of_drink_product = user_setting.drink_product;
 					let opportunity = 0;
+					let overall_product = 0;
 					let tare_product = 0;
 					let drink_product = 0;
 					console.log(name);
@@ -69,18 +71,43 @@ function test() {
 						opportunity += +data[id][i].OPPORTUNITY;
 						let products = data[id][i].PRODUCTS;
 						for (let product of products) {
-							if (product.SECTION_ID === "44") {
-								tare_product += product.QUANTITY;
-							}
-							if (product.SECTION_ID === "45") {
-								drink_product += product.QUANTITY;
+							switch ($type_of_product.val()) {
+								case 'Общее':
+									overall_product += product.QUANTITY;
+									break;
+								case 'По категориям товара':
+									if (product.SECTION_ID === "44") {
+										tare_product += product.QUANTITY;
+									}
+									if (product.SECTION_ID === "45") {
+										drink_product += product.QUANTITY;
+									}
+									break;
 							}
 						}
 					}
-					let pct_drink_product = ((100 * drink_product) / plane_of_drink_product).toFixed(2);
-					let pct_tare_product = ((100 * tare_product) / plane_of_tare_product).toFixed(2);
-
-					$('.main').append(`<div class="d-flex flex-column">
+					switch ($type_of_product.val()) {
+						case 'Общее':
+							let pct_overall_product = ((100 * drink_product) / plane_of_drink_product).toFixed(2);
+							$('.main').append(`<div class="d-flex flex-column">
+								<h4 class="name">${name}</h4>
+								<label></label>
+								<div class="progress mb-3">
+									<div class="progress-bar" role="progressbar" aria-label="tare_product" style="width: ${pct_overall_product}%;" aria-valuenow="${pct_overall_product}" aria-valuemin="0" aria-valuemax="100">
+									${pct_overall_product}%
+									</div>
+								</div>
+								<div class="row gy-5">
+									<p class="col-3 border text-bg-info">Выполненно по плану : <br>${overall_product} / ${plane_of_overall_product} единиц.</p>
+									<p class="col-3 border text-bg-warning">Общее количество реализованного товара: ${drink_product + tare_product} единиц.</p>
+									<p class="col-3 border text-bg-success">На общую сумму: <br>${opportunity} руб.</p>
+								</div>
+							</div>`);
+							break;
+						case 'По категориям товара':
+							let pct_drink_product = ((100 * drink_product) / plane_of_drink_product).toFixed(2);
+							let pct_tare_product = ((100 * tare_product) / plane_of_tare_product).toFixed(2);
+							$('.main').append(`<div class="d-flex flex-column">
 								<h4 class="name">${name}</h4>
 								<label>Пэт-тара</label>
 								<div class="progress mb-3">
@@ -94,17 +121,40 @@ function test() {
 									${pct_drink_product}%
 									</div>
 								</div>
-						
 								<div class="row gy-5">
 									<p class="col-3 border text-bg-info">Выполненно по плану "Пэт-тара" : <br>${tare_product} / ${plane_of_tare_product} единиц.</p>
 									<p class="col-3 border text-bg-info">Выполненно по плану "Вода, напитки" : <br>${drink_product} / ${plane_of_drink_product} единиц.</p>
-									<p class="col-3 border text-bg-warning">Общее количество реализованного товара: <br>${drink_product + tare_product} единиц.</p>
+									<p class="col-3 border text-bg-warning">Общее количество реализованного товара: ${drink_product + tare_product} единиц.</p>
 									<p class="col-3 border text-bg-success">На общую сумму: <br>${opportunity} руб.</p>
 								</div>
 						</div>`);
+							break;
+					}
+					//let pct_drink_product = ((100 * drink_product) / plane_of_drink_product).toFixed(2);
+					//let pct_tare_product = ((100 * tare_product) / plane_of_tare_product).toFixed(2);
+					/*$('.main').append(`<div class="d-flex flex-column">
+								<h4 class="name">${name}</h4>
+								<label>Пэт-тара</label>
+								<div class="progress mb-3">
+									<div class="progress-bar" role="progressbar" aria-label="tare_product" style="width: ${pct_tare_product}%;" aria-valuenow="${pct_tare_product}" aria-valuemin="0" aria-valuemax="100">
+									${pct_tare_product}%
+									</div>
+								</div>
+								<label>Вода, напитки</label>
+								<div class="progress mb-3">
+									<div class="progress-bar" role="progressbar" aria-label="drink_product" style="width: ${pct_drink_product}%;" aria-valuenow="${pct_drink_product}" aria-valuemin="0" aria-valuemax="100">
+									${pct_drink_product}%
+									</div>
+								</div>
+								<div class="row gy-5">
+									<p class="col-3 border text-bg-info">Выполненно по плану "Пэт-тара" : <br>${tare_product} / ${plane_of_tare_product} единиц.</p>
+									<p class="col-3 border text-bg-info">Выполненно по плану "Вода, напитки" : <br>${drink_product} / ${plane_of_drink_product} единиц.</p>
+									<p class="col-3 border text-bg-warning">Общее количество реализованного товара: ${drink_product + tare_product} единиц.</p>
+									<p class="col-3 border text-bg-success">На общую сумму: <br>${opportunity} руб.</p>
+								</div>
+						</div>`);*/
 				} else {
 					let name = user_setting.name;
-
 					$('.main').append(`<div class="d-flex flex-column">
 							<h4 class="name">${name}</h4>
 							<p class="col-12">Данных по данному сотруднику не обнаруженно.</p>
@@ -116,4 +166,3 @@ function test() {
 }
 
 test();
-

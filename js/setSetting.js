@@ -128,15 +128,15 @@ $(document).ready(function () {
 				</div>  
 			  <div class="overall_product col-3">
 			    <label for="overall_product" class="form-label mb-0">Общее</label>
-			    <input type="text" class="form-control" id="overall_product">
+			    <input type="number" class="form-control" id="overall_product" value="0" min="0">
 			  </div>
 			  <div class="tare_product col-3">
 			    <label for="tare_product" class="form-label mb-0">ПЭТ-тара</label>
-			    <input type="text" class="form-control" id="tare_product">
+			    <input type="number" class="form-control" id="tare_product" value="0" min="0">
 			  </div>
 			  <div class="drink_product col-3">
 			    <label for="drink_product" class="form-label mb-0">Вода, напитки</label>
-			    <input type="text" class="form-control" id="drink_product">
+			    <input type="number" class="form-control" id="drink_product" value="0" min="0">
 			  </div>
 			</li>`);
 		}

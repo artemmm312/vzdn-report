@@ -74,6 +74,3 @@ while ($record = $Deals->Fetch()) {
 }
 
 echo json_encode($users_deals);
-
-
-
