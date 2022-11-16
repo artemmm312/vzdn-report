@@ -15,7 +15,7 @@
 <div class="container">
 	<div class="header d-flex justify-content-between">
 		<div class="title fs-3 fw-semibold">
-			<p>План продаж по количеству товара</p>
+			<p class="shadow-sm">План продаж по количеству товара</p>
 		</div>
 		<div class="settings">
 			<?php require_once "settings.php" ?>
@@ -24,7 +24,7 @@
 </div>
 <div class="container">
 	<div class="main">
-		<p class="text-date m-2 p-2 text-center"></p>
+		<p class="text-date m-2 p-2 text-center shadow-sm"></p>
 	</div>
 </div>
 <script type="text/javascript" src="js/setSetting.js"></script>

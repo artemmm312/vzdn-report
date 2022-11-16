@@ -71,88 +71,92 @@ function test() {
 						opportunity += +data[id][i].OPPORTUNITY;
 						let products = data[id][i].PRODUCTS;
 						for (let product of products) {
-							switch ($type_of_product.val()) {
-								case 'Общее':
-									overall_product += product.QUANTITY;
-									break;
-								case 'По категориям товара':
-									if (product.SECTION_ID === "44") {
-										tare_product += product.QUANTITY;
-									}
-									if (product.SECTION_ID === "45") {
-										drink_product += product.QUANTITY;
-									}
-									break;
+							overall_product += product.QUANTITY;
+							if (product.SECTION_ID === "44") {
+								tare_product += product.QUANTITY;
+							}
+							if (product.SECTION_ID === "45") {
+								drink_product += product.QUANTITY;
 							}
 						}
 					}
+					let pct_overall_product = ((100 * overall_product) / plane_of_overall_product).toFixed(2);
+					let pct_drink_product = ((100 * drink_product) / plane_of_drink_product).toFixed(2);
+					let pct_tare_product = ((100 * tare_product) / plane_of_tare_product).toFixed(2);
 					switch ($type_of_product.val()) {
 						case 'Общее':
-							let pct_overall_product = ((100 * drink_product) / plane_of_drink_product).toFixed(2);
-							$('.main').append(`<div class="d-flex flex-column">
+							$('.main').append(`<div class="d-flex flex-column mb-3">
 								<h4 class="name">${name}</h4>
 								<label></label>
-								<div class="progress mb-3">
-									<div class="progress-bar" role="progressbar" aria-label="tare_product" style="width: ${pct_overall_product}%;" aria-valuenow="${pct_overall_product}" aria-valuemin="0" aria-valuemax="100">
+								<div class="progress mb-3 shadow">
+									<div class="progress-bar ${pct_overall_product > 100 ? 'progress-bar-striped progress-bar-animated' : ''}" role="progressbar" aria-label="tare_product" style="width: ${pct_overall_product}%;" aria-valuenow="${pct_overall_product}" aria-valuemin="0" aria-valuemax="100">
 									${pct_overall_product}%
 									</div>
 								</div>
-								<div class="row gy-5">
-									<p class="col-3 border text-bg-info">Выполненно по плану : <br>${overall_product} / ${plane_of_overall_product} единиц.</p>
-									<p class="col-3 border text-bg-warning">Общее количество реализованного товара: ${drink_product + tare_product} единиц.</p>
-									<p class="col-3 border text-bg-success">На общую сумму: <br>${opportunity} руб.</p>
+								<div class="row g-2">
+									<div class="col-3">
+										<div class="border border-info bg-info bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+											<p class="p-2 m-0">Выполненно по Общему плану:<br> ${overall_product} / ${plane_of_overall_product} единиц.</p>
+										</div>
+									</div>
+									<div class="col-3">
+										<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+											<p class="p-2 m-0">Из общего количества реализованного товара - "Пэт-тара" составляет:<br> ${tare_product} единиц.</p>
+										</div>
+									</div>
+									<div class="col-3">
+										<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+											<p class="p-2 m-0">Из общего количества реализованного товара - "Вода, напитки" составляет:<br> ${drink_product} единиц.</p>
+										</div>
+									</div>
+									<div class="col-3">
+										<div class="border border-success bg-success bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+											<p class="p-2 m-0">На общую сумму:<br> ${opportunity} руб.</p>
+										</div>
+									</div>
 								</div>
 							</div>`);
 							break;
 						case 'По категориям товара':
-							let pct_drink_product = ((100 * drink_product) / plane_of_drink_product).toFixed(2);
-							let pct_tare_product = ((100 * tare_product) / plane_of_tare_product).toFixed(2);
 							$('.main').append(`<div class="d-flex flex-column">
 								<h4 class="name">${name}</h4>
 								<label>Пэт-тара</label>
-								<div class="progress mb-3">
-									<div class="progress-bar" role="progressbar" aria-label="tare_product" style="width: ${pct_tare_product}%;" aria-valuenow="${pct_tare_product}" aria-valuemin="0" aria-valuemax="100">
+								<div class="progress mb-3 shadow">
+									<div class="progress-bar ${pct_tare_product > 100 ? 'progress-bar-striped progress-bar-animated' : ''}" role="progressbar" aria-label="tare_product" style="width: ${pct_tare_product}%;" aria-valuenow="${pct_tare_product}" aria-valuemin="0" aria-valuemax="100">
 									${pct_tare_product}%
 									</div>
 								</div>
 								<label>Вода, напитки</label>
-								<div class="progress mb-3">
-									<div class="progress-bar" role="progressbar" aria-label="drink_product" style="width: ${pct_drink_product}%;" aria-valuenow="${pct_drink_product}" aria-valuemin="0" aria-valuemax="100">
+								<div class="progress mb-3 shadow">
+									<div class="progress-bar ${pct_drink_product > 100 ? 'progress-bar-striped progress-bar-animated' : ''}" role="progressbar" aria-label="drink_product" style="width: ${pct_drink_product}%;" aria-valuenow="${pct_drink_product}" aria-valuemin="0" aria-valuemax="100">
 									${pct_drink_product}%
 									</div>
 								</div>
-								<div class="row gy-5">
-									<p class="col-3 border text-bg-info">Выполненно по плану "Пэт-тара" : <br>${tare_product} / ${plane_of_tare_product} единиц.</p>
-									<p class="col-3 border text-bg-info">Выполненно по плану "Вода, напитки" : <br>${drink_product} / ${plane_of_drink_product} единиц.</p>
-									<p class="col-3 border text-bg-warning">Общее количество реализованного товара: ${drink_product + tare_product} единиц.</p>
-									<p class="col-3 border text-bg-success">На общую сумму: <br>${opportunity} руб.</p>
+								<div class="row g-2">
+									<div class="col-3">
+										<div class="border border-info bg-info bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+											<p class="p-2 m-0">Выполненно по плану "Пэт-тара":<br> ${tare_product} / ${plane_of_tare_product} единиц.</p>
+										</div>
+									</div>
+									<div class="col-3">
+										<div class="border border-info bg-info bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+											<p class="p-2 m-0">Выполненно по плану "Вода, напитки":<br> ${drink_product} / ${plane_of_drink_product} единиц.</p>
+										</div>
+									</div>
+									<div class="col-3">
+										<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+											<p class="p-2 m-0">Общее количество реализованного товара:<br> ${overall_product} единиц.</p>
+										</div>
+									</div>
+									<div class="col-3">
+										<div class="border border-success bg-success bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+											<p class="p-2 m-0">На общую сумму:<br> ${opportunity} руб.</p>
+										</div>
+									</div>
 								</div>
-						</div>`);
+							</div>`);
 							break;
 					}
-					//let pct_drink_product = ((100 * drink_product) / plane_of_drink_product).toFixed(2);
-					//let pct_tare_product = ((100 * tare_product) / plane_of_tare_product).toFixed(2);
-					/*$('.main').append(`<div class="d-flex flex-column">
-								<h4 class="name">${name}</h4>
-								<label>Пэт-тара</label>
-								<div class="progress mb-3">
-									<div class="progress-bar" role="progressbar" aria-label="tare_product" style="width: ${pct_tare_product}%;" aria-valuenow="${pct_tare_product}" aria-valuemin="0" aria-valuemax="100">
-									${pct_tare_product}%
-									</div>
-								</div>
-								<label>Вода, напитки</label>
-								<div class="progress mb-3">
-									<div class="progress-bar" role="progressbar" aria-label="drink_product" style="width: ${pct_drink_product}%;" aria-valuenow="${pct_drink_product}" aria-valuemin="0" aria-valuemax="100">
-									${pct_drink_product}%
-									</div>
-								</div>
-								<div class="row gy-5">
-									<p class="col-3 border text-bg-info">Выполненно по плану "Пэт-тара" : <br>${tare_product} / ${plane_of_tare_product} единиц.</p>
-									<p class="col-3 border text-bg-info">Выполненно по плану "Вода, напитки" : <br>${drink_product} / ${plane_of_drink_product} единиц.</p>
-									<p class="col-3 border text-bg-warning">Общее количество реализованного товара: ${drink_product + tare_product} единиц.</p>
-									<p class="col-3 border text-bg-success">На общую сумму: <br>${opportunity} руб.</p>
-								</div>
-						</div>`);*/
 				} else {
 					let name = user_setting.name;
 					$('.main').append(`<div class="d-flex flex-column">

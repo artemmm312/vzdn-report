@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+<button type="button" class="btn btn-primary shadow" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
 	Настройка
 </button>
 <!-- Modal -->
@@ -51,6 +51,7 @@
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
 				<button type="button" class="btn btn-primary" id="apply">Применить</button>
+				<button type="button" class="btn btn-success" id="save">Сохранить</button>
 			</div>
 		</div>
 	</div>
