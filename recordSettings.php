@@ -1,9 +1,21 @@
 <?php
 
-$data = $_POST['settings'];
+$settings = $_POST['settings'];
+echo $_POST['file_name'];
+$file_name = '';
 
-$filename = "settings/lastSettings.json";
+if(!empty($_POST['file_name'])) {
+	$file_name = $_POST['file_name'];
+	var_dump($file_name);
+}
+if($file_name !== '') {
+	$file = "settings/saved/$file_name.json";
+} else {
+	$file = "settings/lastSettings.json";
+}
 
-$fd = fopen($filename, 'w') or die("не удалось открыть файл");
-fwrite($fd, $data);
+var_dump($file);
+
+$fd = fopen($file, 'w') or die("не удалось открыть файл");
+fwrite($fd, $settings);
 fclose($fd);

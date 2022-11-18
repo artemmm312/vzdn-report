@@ -36,11 +36,10 @@ switch ($general_settings['season']) {
 		$last_date = date("d.m.Y", mktime(0, 0, 0, $month_end[$general_settings['month_or_quarter']], 1, $year));
 		break;
 	case "Год":
-		$month_start = 1;
-		$month_end = 12;
-		$year = $general_settings['year'];
-		$first_date = date("d.m.Y", mktime(0, 0, 0, $month_start, 1, $year));
-		$last_date = date("d.m.Y", mktime(0, 0, 0, $month_end, 1, $year));
+		$month = 1;
+		$year = $general_settings['year'] + 1;
+		$first_date = date("d.m.Y", mktime(0, 0, 0, $month, 1, $general_settings['year']));
+		$last_date = date("d.m.Y", mktime(0, 0, 0, $month, 1, $year));
 		break;
 }
 

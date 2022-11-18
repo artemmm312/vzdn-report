@@ -121,22 +121,22 @@ $(document).ready(function () {
 			names.push($(`#Users option[value=${usersID[i]}]`).text()) //массив фио выбранных пользователей
 		}
 		for (let i = 0; i < names.length; i++) {
-			$('.users_list').append(`<li class="list-group-item d-flex justify-content-start align-items-center row" id="${usersID[i]}" value="${usersID[i]}">
+			$('.users_list').append(`<li class="list-group-item row" id="${usersID[i]}" value="${usersID[i]}">
 				<div class="user col-6 d-flex justify-content-between">
-					<button id="deleteUser" type="button" class="btn-close" aria-label="remove user from the list"></button>
+					<button class="btn-close" id="deleteUser" type="button" aria-label="remove user from the list"></button>
 					<p class="mb-0 text-center" id="userName">${names[i]}</p>
 				</div>  
 			  <div class="overall_product col-3">
-			    <label for="overall_product" class="form-label mb-0">Общее</label>
-			    <input type="number" class="form-control" id="overall_product" value="0" min="0">
+			    <label class="form-label mb-0" for="overall_product" >Общее</label>
+			    <input class="form-control" id="overall_product" type="number" value="0" min="0">
 			  </div>
 			  <div class="tare_product col-3">
-			    <label for="tare_product" class="form-label mb-0">ПЭТ-тара</label>
-			    <input type="number" class="form-control" id="tare_product" value="0" min="0">
+			    <label class="form-label mb-0" for="tare_product">ПЭТ-тара</label>
+			    <input class="form-control" id="tare_product" type="number" value="0" min="0">
 			  </div>
 			  <div class="drink_product col-3">
-			    <label for="drink_product" class="form-label mb-0">Вода, напитки</label>
-			    <input type="number" class="form-control" id="drink_product" value="0" min="0">
+			    <label class="form-label mb-0" for="drink_product">Вода, напитки</label>
+			    <input class="form-control" id="drink_product" type="number" value="0" min="0">
 			  </div>
 			</li>`);
 		}
@@ -156,50 +156,8 @@ $(document).ready(function () {
 
 });
 
-/*//получение данных от сервера
-function getSettings() {
-	$.ajax({
-		type: 'POST',
-		url: 'readSettings.php',
-		success: function (response) {
-			let data = jQuery.parseJSON(response);
-			let general_settings = data[0];
-			let users_settings = data[1];
-
-			$season.selectpicker('val', general_settings.season);
-			choseSeason($season.val());
-			$month_or_quarter.selectpicker('val', general_settings.month_or_quarter);
-			$year.selectpicker('val', general_settings.year);
-			$type_of_product.selectpicker('val', general_settings.type_of_product);
-			for (let i = 0; i < users_settings.length; i++) {
-				$('.users_list').append(`<li class="list-group-item d-flex justify-content-start align-items-center row" id="${users_settings[i].id}" value="${users_settings[i].id}">
-				<div class="user col-6 d-flex justify-content-between">
-					<button id="deleteUser" type="button" class="btn-close" aria-label="remove user from the list"></button>
-					<p class="mb-0 text-center" id="userName">${users_settings[i].name}</p>
-				</div>  
-			  <div class="overall_product col-3">
-			    <label for="overall_product" class="form-label mb-0">Общее</label>
-			    <input type="text" class="form-control" id="overall_product" value="${users_settings[i].overall_product}">
-			  </div>
-			  <div class="tare_product col-3">
-			    <label for="tare_product" class="form-label mb-0">ПЭТ-тара</label>
-			    <input type="text" class="form-control" id="tare_product" value="${users_settings[i].tare_product}">
-			  </div>
-			  <div class="drink_product col-3">
-			    <label for="drink_product" class="form-label mb-0">Вода, напитки</label>
-			    <input type="text" class="form-control" id="drink_product" value="${users_settings[i].drink_product}">
-			  </div>
-			</li>`);
-			}
-			choseTypeProduct($type_of_product.val());
-		},
-	})
-}
-
-getSettings();*/
-
 //сохнанение настроек
-function saveSettings() {
+function saveSettings(file_name = '') {
 	let general_settings = {
 		'season': $season.val(),
 		'month_or_quarter': $month_or_quarter.val(),
@@ -219,11 +177,13 @@ function saveSettings() {
 	}
 	let settings = [general_settings, users_settings];
 	console.log(settings);
+	console.log(file_name);
 	$.ajax({
 		type: 'POST',
 		url: 'recordSettings.php',
-		data: {'settings': JSON.stringify(settings)},
+		data: {'settings': JSON.stringify(settings), 'file_name': file_name},
 		success: function (response) {
+			console.log(response);
 		},
 	})
 }

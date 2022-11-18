@@ -9,7 +9,7 @@ while ($item = $usersData->Fetch()) {
 ?>
 
 <div class="row">
-	<div class="col-6 text-center align-items-center justify-content-center" style="overflow: hidden;">
+	<div class="col-6 text-center" style="overflow: hidden;">
 		<select id="Users" class="selectpicker"
 		        data-width="fit"
 		        data-live-search="true"
@@ -32,9 +32,11 @@ while ($item = $usersData->Fetch()) {
 
 		</select>
 	</div>
-	<button id="addUsers" type="button" class="btn btn-info col-6" disabled data-bs-toggle="button">
-		Добавить выбранных пользователей
-	</button>
+	<div class="col-6 text-center">
+		<button class="btn btn-info" id="addUsers" type="button" disabled data-bs-toggle="button">
+			Добавить выбранных пользователей
+		</button>
+	</div>
 </div>
 
 

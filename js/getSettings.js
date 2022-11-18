@@ -2,14 +2,13 @@ let general_settings;
 let users_settings;
 
 //получение данных от сервера
-function getSettings() {
+function getSettings(file_name = '') {
+	console.log(file_name);
 	$.ajax({
-		type: 'POST', url: 'readSettings.php', success: function (response) {
+		type: 'POST', url: 'readSettings.php', data: {'file_name': file_name}, success: function (response) {
 			let data = jQuery.parseJSON(response);
 			general_settings = data[0];
 			users_settings = data[1];
-			//console.log(users_settings);
-
 			$season.selectpicker('val', general_settings.season);
 			choseSeason($season.val());
 			$month_or_quarter.selectpicker('val', general_settings.month_or_quarter);
@@ -42,8 +41,8 @@ function getSettings() {
 
 getSettings();
 
-//дынные для отчета
-function test() {
+//формирование отчета
+function reportGeneration() {
 	$.ajax({
 		type: 'POST', url: 'handler.php', success: function (response) {
 			let data = jQuery.parseJSON(response);
@@ -51,14 +50,11 @@ function test() {
 				`Показатели по плану продаж за ${$year.val()} год :` :
 				`Показатели по плану продаж за ${$month_or_quarter.find('option:selected').text()} ${$year.val()} года :`;
 			$('.text-date').append(text_of_date);
-			console.log(data);
-			console.log(general_settings);
-			console.log(users_settings);
 			for (let user_setting of users_settings) {
-				console.log(user_setting.id);
+				let name = user_setting.name;
 				if (user_setting.id in data) {
 					let id = user_setting.id;
-					let name = user_setting.name;
+					//let name = user_setting.name;
 					let plane_of_overall_product = user_setting.overall_product;
 					let plane_of_tare_product = user_setting.tare_product;
 					let plane_of_drink_product = user_setting.drink_product;
@@ -66,7 +62,6 @@ function test() {
 					let overall_product = 0;
 					let tare_product = 0;
 					let drink_product = 0;
-					console.log(name);
 					for (let i = 0; i < data[id].length; i++) {
 						opportunity += +data[id][i].OPPORTUNITY;
 						let products = data[id][i].PRODUCTS;
@@ -90,23 +85,23 @@ function test() {
 								<label></label>
 								<div class="progress mb-3 shadow">
 									<div class="progress-bar ${pct_overall_product > 100 ? 'progress-bar-striped progress-bar-animated' : ''}" role="progressbar" aria-label="tare_product" style="width: ${pct_overall_product}%;" aria-valuenow="${pct_overall_product}" aria-valuemin="0" aria-valuemax="100">
-									${pct_overall_product}%
+										${pct_overall_product}%
 									</div>
 								</div>
 								<div class="row g-2">
 									<div class="col-3">
 										<div class="border border-info bg-info bg-opacity-25 d-flex justify-content-center align-items-center h-100">
-											<p class="p-2 m-0">Выполненно по Общему плану:<br> ${overall_product} / ${plane_of_overall_product} единиц.</p>
+											<p class="p-2 m-0">Выполненно по "Общему" плану:<br> ${overall_product} / ${plane_of_overall_product} единиц.</p>
 										</div>
 									</div>
 									<div class="col-3">
 										<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
-											<p class="p-2 m-0">Из общего количества реализованного товара - "Пэт-тара" составляет:<br> ${tare_product} единиц.</p>
+											<p class="p-2 m-0">Из "Общего" плана "Пэт-тара" составляет:<br> ${tare_product} единиц.</p>
 										</div>
 									</div>
 									<div class="col-3">
 										<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
-											<p class="p-2 m-0">Из общего количества реализованного товара - "Вода, напитки" составляет:<br> ${drink_product} единиц.</p>
+											<p class="p-2 m-0">Из "Общего" плана "Вода, напитки" составляет:<br> ${drink_product} единиц.</p>
 										</div>
 									</div>
 									<div class="col-3">
@@ -118,18 +113,18 @@ function test() {
 							</div>`);
 							break;
 						case 'По категориям товара':
-							$('.main').append(`<div class="d-flex flex-column">
+							$('.main').append(`<div class="d-flex flex-column mb-3">
 								<h4 class="name">${name}</h4>
 								<label>Пэт-тара</label>
-								<div class="progress mb-3 shadow">
+								<div class="progress mb-2 shadow">
 									<div class="progress-bar ${pct_tare_product > 100 ? 'progress-bar-striped progress-bar-animated' : ''}" role="progressbar" aria-label="tare_product" style="width: ${pct_tare_product}%;" aria-valuenow="${pct_tare_product}" aria-valuemin="0" aria-valuemax="100">
-									${pct_tare_product}%
+										${pct_tare_product}%
 									</div>
 								</div>
 								<label>Вода, напитки</label>
 								<div class="progress mb-3 shadow">
 									<div class="progress-bar ${pct_drink_product > 100 ? 'progress-bar-striped progress-bar-animated' : ''}" role="progressbar" aria-label="drink_product" style="width: ${pct_drink_product}%;" aria-valuenow="${pct_drink_product}" aria-valuemin="0" aria-valuemax="100">
-									${pct_drink_product}%
+										${pct_drink_product}%
 									</div>
 								</div>
 								<div class="row g-2">
@@ -158,7 +153,6 @@ function test() {
 							break;
 					}
 				} else {
-					let name = user_setting.name;
 					$('.main').append(`<div class="d-flex flex-column">
 							<h4 class="name">${name}</h4>
 							<p class="col-12">Данных по данному сотруднику не обнаруженно.</p>
@@ -169,4 +163,4 @@ function test() {
 	})
 }
 
-test();
+reportGeneration();
