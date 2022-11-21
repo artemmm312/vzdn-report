@@ -27,8 +27,13 @@
 		<p class="text-date m-2 p-2 text-center shadow-sm"></p>
 	</div>
 </div>
+<script type="text/javascript" src="js/loader.js"></script>
+<script type="text/javascript" src="js/functions.js"></script>
+<script type="text/javascript" src="js/buttons.js"></script>
+<!--
 <script type="text/javascript" src="js/setSetting.js"></script>
 <script type="text/javascript" src="js/getSettings.js"></script>
 <script type="text/javascript" src="js/saveSettings.js"></script>
+-->
 
 <?php require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/footer.php"); ?>

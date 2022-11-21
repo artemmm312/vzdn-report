@@ -1,3 +1,120 @@
+
+let now = new Date(); //текущая дата
+let now_year = now.getFullYear(); //текущий год
+
+//массив месяцев
+const months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+//массив кварталов
+const quarter = ["1 квартал", "2 квартал", "3 квартал", "4 квартал"];
+//массив диапозона годов +-5 от текущего в селекте
+const range_for_years = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+
+let $season = $('#season');
+let $month_or_quarter = $('#month_or_quarter');
+let $year = $('#year');
+let $type_of_product = $('#type_of_product');
+
+//вывод годов в селект
+for (let i of range_for_years) {
+	$year.append(`<option value="${now_year + i}">${now_year + i}</option>`);
+}
+
+function choseSeason(season) {
+	let $div_month_or_quarter = $('.month_or_quarter');
+	switch (season) {
+		case 'Месяц':
+			$div_month_or_quarter.css('display', 'block');
+			$month_or_quarter.find('option').remove();
+			for (let i in months) {
+				$month_or_quarter.append(`<option value="${i}">${months[i]}</option>`);
+			}
+			$month_or_quarter.selectpicker('destroy');
+			$month_or_quarter.selectpicker('render');
+			break;
+		case 'Квартал':
+			$div_month_or_quarter.css('display', 'block');
+			$month_or_quarter.find('option').remove();
+			for (let i in quarter) {
+				$month_or_quarter.append(`<option value="${i}">${quarter[i]}</option>`);
+			}
+			$month_or_quarter.selectpicker('destroy');
+			$month_or_quarter.selectpicker('render');
+			break;
+		case 'Год':
+			$div_month_or_quarter.css('display', 'none');
+			break;
+	}
+}
+
+function choseTypeProduct(type) {
+	let $div_overall_product = $('.overall_product');
+	let $div_tare_product = $('.tare_product');
+	let $div_drink_product = $('.drink_product');
+	switch (type) {
+		case 'Общее':
+			$div_overall_product.css('display', 'block');
+			$div_tare_product.css('display', 'none');
+			$div_drink_product.css('display', 'none');
+			break;
+		case 'По категориям товара':
+			$div_overall_product.css('display', 'none');
+			$div_tare_product.css('display', 'block');
+			$div_drink_product.css('display', 'block');
+			break;
+	}
+}
+
+let usersID = [];
+let names = [];
+let users = [];
+let $Users = $('#Users');
+
+// запись в массив порльзовыателей из списка
+function pushUsers() {
+	users.length = 0;
+	for (let key of $('.users_list li')) {
+		users.push({'id': $(key).val(), 'name': $(key).find('#userName').text()});
+	}
+}
+
+//отключение пунктов в селекте которые есть в списке
+function disOption() {
+	$Users.find('option').prop('disabled', false);
+	for (let user of users) {
+		$Users.find(`[value=${user['id']}]`).prop('disabled', true);
+	}
+	$Users.selectpicker('destroy');
+	$Users.selectpicker('render');
+}
+
+//сохнанение настроек
+function saveSettings(file_name = '') {
+	let general_settings = {
+		'season': $season.val(),
+		'month_or_quarter': $month_or_quarter.val(),
+		'year': $year.val(),
+		'type_of_product': $type_of_product.val(),
+	};
+	let users_settings = [];
+	for (let key of $('.users_list li')) {
+		let user_setting = {
+			'id': $(key).val(),
+			'name': $(key).find('#userName').text(),
+			'overall_product': $(key).find('#overall_product').val(),
+			'tare_product': $(key).find('#tare_product').val(),
+			'drink_product': $(key).find('#drink_product').val(),
+		}
+		users_settings.push(user_setting);
+	}
+	let settings = [general_settings, users_settings];
+	$.ajax({
+		type: 'POST',
+		url: 'src/recordSettings.php',
+		data: {'settings': JSON.stringify(settings), 'file_name': file_name},
+		success: function (response) {},
+	})
+}
+
 let general_settings;
 let users_settings;
 
@@ -37,8 +154,6 @@ function getSettings(file_name = '') {
 		},
 	})
 }
-
-getSettings();
 
 //получение даных от сервера и формирование отчета
 function reportGeneration() {
@@ -165,4 +280,23 @@ function reportGeneration() {
 	})
 }
 
-reportGeneration();
+let $saved_settings = $('#saved_settings');
+
+//получение списка сохраненных настроек
+function getListSettings() {
+	$saved_settings.find('option').remove();
+	$.ajax({
+		type: 'POST', url: 'src/getListSettings.php', success: function (response) {
+			let data = jQuery.parseJSON(response);
+			for (let key in data) {
+				let reg = /\.json/;
+				if(data[key].match(reg)) {
+					data[key] = data[key].replace(reg, '');
+				}
+				$saved_settings.append(`<option>${data[key]}</option>`);
+			}
+			$saved_settings.selectpicker('destroy');
+			$saved_settings.selectpicker('render');
+		}
+	})
+}
