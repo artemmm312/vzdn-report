@@ -31,31 +31,4 @@
 <script type="text/javascript" src="js/getSettings.js"></script>
 <script type="text/javascript" src="js/saveSettings.js"></script>
 
-<?php
-\Bitrix\Main\Loader::includeModule('crm');
-
-function pr($var)
-{
-	static $int = 0;
-	echo '<pre><b style="background: red;padding: 1px 5px;">' . $int . '</b> ';
-	print_r($var);
-	echo '</pre>';
-	$int++;
-}
-
-$fd = fopen("settings/lastSettings.json", 'r') or die("не удалось открыть файл");
-$settings = null;
-while (!feof($fd)) {
-	$settings = json_decode(fgets($fd), true);
-}
-fclose($fd);
-
-//pr($settings);
-$dir  = 'settings/saved';
-$files = scandir($dir);
-$scanned_directory = array_diff(scandir($dir), array('..', '.'));
-var_dump($scanned_directory);
-
-?>
-
 <?php require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/footer.php"); ?>

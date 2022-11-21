@@ -13,7 +13,6 @@ let $month_or_quarter = $('#month_or_quarter');
 let $year = $('#year');
 let $type_of_product = $('#type_of_product');
 
-
 //вывод годов в селект
 for (let i of range_for_years) {
 	$year.append(`<option value="${now_year + i}">${now_year + i}</option>`);
@@ -74,7 +73,6 @@ $type_of_product.on('change', function () {
 	choseTypeProduct($(this).val());
 });
 
-//$(document).ready(function () {});
 
 let usersID = [];
 let names = [];
@@ -176,18 +174,15 @@ function saveSettings(file_name = '') {
 		users_settings.push(user_setting);
 	}
 	let settings = [general_settings, users_settings];
-	console.log(settings);
-	console.log(file_name);
 	$.ajax({
 		type: 'POST',
-		url: 'recordSettings.php',
+		url: 'src/recordSettings.php',
 		data: {'settings': JSON.stringify(settings), 'file_name': file_name},
-		success: function (response) {
-			console.log(response);
-		},
+		success: function (response) {},
 	})
 }
 
+//кнопка применения настроек
 $('#apply').on('click', function () {
 	saveSettings();
 	location.reload();

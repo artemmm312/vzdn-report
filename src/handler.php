@@ -3,7 +3,7 @@
 <?php
 \Bitrix\Main\Loader::includeModule('crm');
 
-$fd = fopen("settings/lastSettings.json", 'r') or die("не удалось открыть файл");
+$fd = fopen("../settings/lastSettings.json", 'r') or die("не удалось открыть файл");
 $settings = null;
 while (!feof($fd)) {
 	$settings = json_decode(fgets($fd), true);

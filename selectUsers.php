@@ -23,13 +23,11 @@ while ($item = $usersData->Fetch()) {
 		        data-select-all-text="Выбрать всех"
 		        data-none-results-text="Ничего не найдено {0}"
 		        data-count-selected-text="Выбрано {0} (из {1})">
-
 			<?php
 				foreach ($fio as $key => $value) {
 					echo "<option value='$key'>" . $value . "</option>";
 				}
 			?>
-
 		</select>
 	</div>
 	<div class="col-6 text-center">

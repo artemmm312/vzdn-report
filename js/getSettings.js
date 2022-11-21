@@ -1,11 +1,10 @@
 let general_settings;
 let users_settings;
 
-//получение данных от сервера
+//получение данных о настройках от сервера
 function getSettings(file_name = '') {
-	console.log(file_name);
 	$.ajax({
-		type: 'POST', url: 'readSettings.php', data: {'file_name': file_name}, success: function (response) {
+		type: 'POST', url: 'src/readSettings.php', data: {'file_name': file_name}, success: function (response) {
 			let data = jQuery.parseJSON(response);
 			general_settings = data[0];
 			users_settings = data[1];
@@ -41,20 +40,20 @@ function getSettings(file_name = '') {
 
 getSettings();
 
-//формирование отчета
+//получение даных от сервера и формирование отчета
 function reportGeneration() {
 	$.ajax({
-		type: 'POST', url: 'handler.php', success: function (response) {
+		type: 'POST', url: 'src/handler.php', success: function (response) {
 			let data = jQuery.parseJSON(response);
 			let text_of_date = $season.val() === 'Год' ?
 				`Показатели по плану продаж за ${$year.val()} год :` :
 				`Показатели по плану продаж за ${$month_or_quarter.find('option:selected').text()} ${$year.val()} года :`;
 			$('.text-date').append(text_of_date);
+			let $main = $('.main');
 			for (let user_setting of users_settings) {
 				let name = user_setting.name;
 				if (user_setting.id in data) {
 					let id = user_setting.id;
-					//let name = user_setting.name;
 					let plane_of_overall_product = user_setting.overall_product;
 					let plane_of_tare_product = user_setting.tare_product;
 					let plane_of_drink_product = user_setting.drink_product;
@@ -80,11 +79,12 @@ function reportGeneration() {
 					let pct_tare_product = ((100 * tare_product) / plane_of_tare_product).toFixed(2);
 					switch ($type_of_product.val()) {
 						case 'Общее':
-							$('.main').append(`<div class="d-flex flex-column mb-3">
+							$main.append(`<div class="d-flex flex-column mb-3">
 								<h4 class="name">${name}</h4>
 								<label></label>
 								<div class="progress mb-3 shadow">
-									<div class="progress-bar ${pct_overall_product > 100 ? 'progress-bar-striped progress-bar-animated' : ''}" role="progressbar" aria-label="tare_product" style="width: ${pct_overall_product}%;" aria-valuenow="${pct_overall_product}" aria-valuemin="0" aria-valuemax="100">
+									<div class="progress-bar ${pct_overall_product > 100 ? 'progress-bar-striped progress-bar-animated' : ''}"
+									 role="progressbar" aria-label="tare_product" style="width: ${pct_overall_product}%;" aria-valuenow="${pct_overall_product}" aria-valuemin="0" aria-valuemax="100">
 										${pct_overall_product}%
 									</div>
 								</div>
@@ -113,17 +113,19 @@ function reportGeneration() {
 							</div>`);
 							break;
 						case 'По категориям товара':
-							$('.main').append(`<div class="d-flex flex-column mb-3">
+							$main.append(`<div class="d-flex flex-column mb-3">
 								<h4 class="name">${name}</h4>
 								<label>Пэт-тара</label>
 								<div class="progress mb-2 shadow">
-									<div class="progress-bar ${pct_tare_product > 100 ? 'progress-bar-striped progress-bar-animated' : ''}" role="progressbar" aria-label="tare_product" style="width: ${pct_tare_product}%;" aria-valuenow="${pct_tare_product}" aria-valuemin="0" aria-valuemax="100">
+									<div class="progress-bar ${pct_tare_product > 100 ? 'progress-bar-striped progress-bar-animated' : ''}"
+									 role="progressbar" aria-label="tare_product" style="width: ${pct_tare_product}%;" aria-valuenow="${pct_tare_product}" aria-valuemin="0" aria-valuemax="100">
 										${pct_tare_product}%
 									</div>
 								</div>
 								<label>Вода, напитки</label>
 								<div class="progress mb-3 shadow">
-									<div class="progress-bar ${pct_drink_product > 100 ? 'progress-bar-striped progress-bar-animated' : ''}" role="progressbar" aria-label="drink_product" style="width: ${pct_drink_product}%;" aria-valuenow="${pct_drink_product}" aria-valuemin="0" aria-valuemax="100">
+									<div class="progress-bar ${pct_drink_product > 100 ? 'progress-bar-striped progress-bar-animated' : ''}"
+									 role="progressbar" aria-label="drink_product" style="width: ${pct_drink_product}%;" aria-valuenow="${pct_drink_product}" aria-valuemin="0" aria-valuemax="100">
 										${pct_drink_product}%
 									</div>
 								</div>
@@ -153,7 +155,7 @@ function reportGeneration() {
 							break;
 					}
 				} else {
-					$('.main').append(`<div class="d-flex flex-column">
+					$main.append(`<div class="d-flex flex-column">
 							<h4 class="name">${name}</h4>
 							<p class="col-12">Данных по данному сотруднику не обнаруженно.</p>
 						</div>`);
