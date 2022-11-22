@@ -1,23 +1,43 @@
 
+$clear_save = $('#clear_save');
+$load_save = $('#load_save');
+$delete_save = $('#delete_save');
+
+if ($saved_settings.val() === null) {
+	$clear_save.prop('disabled', true);
+	$load_save.prop('disabled', true);
+	$delete_save.prop('disabled', true);
+}
+
+$saved_settings.on('change', function () {
+		$clear_save.prop('disabled', false);
+		$load_save.prop('disabled', false);
+		$delete_save.prop('disabled', false);
+})
+
 //кнопака очистки выбора сохранённой настройки
-$('#clear_save').on('click', function () {
+$clear_save.on('click', function () {
 	$saved_settings.selectpicker('val', '');
+	$(this).prop('disabled', true);
+	$load_save.prop('disabled', true);
+	$delete_save.prop('disabled', true);
 });
 
 //кнопка загрузки выбранной настройки из списка сохранённых
-$('#load_save').on('click', function () {
+$load_save.on('click', function () {
 	let file_name = $saved_settings.val();
 	$('.users_list li').remove();
 	getSettings(file_name);
 });
 
 //кнопка удаления выбранной настройки из списка сохранённых
-$('#delete_save').on('click', function () {
+$delete_save.on('click', function () {
 	let file_name = $saved_settings.val()
 	$('#deletion_text').text(`Вы действительно хотите удалить сохраненный план - ${file_name}`);
 	$('#delete_file').one('click', function () {
 		$.ajax({
-			type: 'POST', url: 'src/deleteSettings.php', data: {'file_name': file_name}, success: function (response) {}
+			type: 'POST', url: 'src/deleteSettings.php', data: {'file_name': file_name}, success: function (response) {
+			}
 		});
 		getListSettings();
 	});
@@ -87,12 +107,22 @@ $('#apply').on('click', function () {
 	location.reload();
 });
 
+
+if($('#saved_name').val() === '') {
+	$('#push_save').prop('disabled', true);
+}
+
 //проверкаа поля ввода имени сохраняемой настройки
 $('#saved_name').on('change keyup input click', function () {
 	let reg = /[!@#$%^&*()_?<>"'`~;\/\\\[\]|]/g;
 	if ($(this).val().match(reg)) {
 		let text = $(this).val().replace(reg, '');
 		$(this).val(text);
+	}
+	if($(this).val() !== '') {
+		$('#push_save').prop('disabled', false);
+	} else {
+		$('#push_save').prop('disabled', true);
 	}
 });
 
