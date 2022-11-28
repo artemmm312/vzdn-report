@@ -1,21 +1,26 @@
 
+//кнопка очистить выбор селекта сохранённых настроек
 $clear_save = $('#clear_save');
+//кнопка загрузить выбранную настройку в селекте сохранённых настроек
 $load_save = $('#load_save');
+//кнопка удалить выбранную настройку в селекте сохранённых настроек
 $delete_save = $('#delete_save');
 
+//отключение кнопок очистить, загрузить, удалить если в селекте сохранённых настроек ничего не выбрано
 if ($saved_settings.val() === null) {
 	$clear_save.prop('disabled', true);
 	$load_save.prop('disabled', true);
 	$delete_save.prop('disabled', true);
 }
 
+//включение кнопок очистить, загрузить, удалить при выборе в селекте сохранённых настроек
 $saved_settings.on('change', function () {
 		$clear_save.prop('disabled', false);
 		$load_save.prop('disabled', false);
 		$delete_save.prop('disabled', false);
 })
 
-//кнопака очистки выбора сохранённой настройки
+//кнопка очистки выбора сохранённой настройки
 $clear_save.on('click', function () {
 	$saved_settings.selectpicker('val', '');
 	$(this).prop('disabled', true);
@@ -43,11 +48,17 @@ $delete_save.on('click', function () {
 	});
 });
 
-
+//событие выбора в селекте месяц/квартал/год
 $season.on('change', function () {
 	choseSeason($(this).val());
 })
 
+//событие выбора плана
+$type_of_plane.on('change', function () {
+	choseTypePlane($(this).val());
+})
+
+//событие выбора в селекте типа продуктов
 $type_of_product.on('change', function () {
 	choseTypeProduct($(this).val());
 });
@@ -68,7 +79,7 @@ $('#addUsers').on('click', function () {
 		names.push($(`#Users option[value=${usersID[i]}]`).text()) //массив фио выбранных пользователей
 	}
 	for (let i = 0; i < names.length; i++) {
-		$('.users_list').append(`<li class="list-group-item row" id="${usersID[i]}" value="${usersID[i]}">
+		$('.users_list').append(`<li class="list-group-item row d-flex justify-content-start align-items-center" id="${usersID[i]}" value="${usersID[i]}">
 				<div class="user col-6 d-flex justify-content-between">
 					<button class="btn-close" id="deleteUser" type="button" aria-label="remove user from the list"></button>
 					<p class="mb-0 text-center" id="userName">${names[i]}</p>
@@ -107,13 +118,26 @@ $('#apply').on('click', function () {
 	location.reload();
 });
 
+//инпут ввода имени сохраняемой настройки
+$saved_name = $('#saved_name');
 
-if($('#saved_name').val() === '') {
+//дефолтное значение поля ввода имени сохраняемой настройки
+$('#save').on('click', function () {
+	if($season.val() === 'Месяц' || $season.val() === 'Квартал') {
+		$saved_name.val(`${$month_or_quarter.find('option:selected').text()} ${$year.val()}`);
+
+	} else if($season.val() === 'Год') {
+		$saved_name.val(`${$year.val()}`)
+	}
+});
+
+//отключение кнопки сохранения пока название пустое
+if($saved_name.val() === '') {
 	$('#push_save').prop('disabled', true);
 }
 
-//проверкаа поля ввода имени сохраняемой настройки
-$('#saved_name').on('change keyup input click', function () {
+//проверка поля ввода имени сохраняемой настройки
+$saved_name.on('change keyup input click', function () {
 	let reg = /[!@#$%^&*()_?<>"'`~;\/\\\[\]|]/g;
 	if ($(this).val().match(reg)) {
 		let text = $(this).val().replace(reg, '');

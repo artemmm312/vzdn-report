@@ -7,7 +7,7 @@
 	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 		<div class="modal-content">
 			<div class="modal-header d-flex justify-content-between">
-				<h1 class="modal-title fs-5" id="staticBackdropLabel">Настройки для плана продаж по количеству товара</h1>
+				<h1 class="modal-title fs-5" id="staticBackdropLabel">Настройки плана</h1>
 				<div class="d-flex">
 					<div class="container text-center mx-2" style="width: 370px;">
 						<select class="selectpicker m-auto" id="saved_settings"
@@ -17,13 +17,21 @@
 						</select>
 						<div class="row mt-1">
 							<div class="col-4">
-								<button class="btn btn-secondary" id="clear_save" type="button" style="--bs-btn-padding-y: 3px; --bs-btn-padding-x: 3px; --bs-btn-font-size: 10px;">Очистить выбор</button>
+								<button class="btn btn-secondary" id="clear_save" type="button"
+								        style="--bs-btn-padding-y: 3px; --bs-btn-padding-x: 3px; --bs-btn-font-size: 10px;">Очистить
+									выбор
+								</button>
 							</div>
 							<div class="col-4">
-								<button class="btn btn-primary" id="load_save" type="button" style="--bs-btn-padding-y: 3px; --bs-btn-padding-x: 3px; --bs-btn-font-size: 9px;">Загрузить выбранное</button>
+								<button class="btn btn-primary" id="load_save" type="button"
+								        style="--bs-btn-padding-y: 3px; --bs-btn-padding-x: 3px; --bs-btn-font-size: 9px;">Загрузить
+									выбранное
+								</button>
 							</div>
 							<div class="col-4">
-								<button class="btn btn-danger" id="delete_save" type="button" style="--bs-btn-padding-y: 3px; --bs-btn-padding-x: 3px; --bs-btn-font-size: 9px;" data-bs-toggle="modal" data-bs-target="#deletion_confirmation">
+								<button class="btn btn-danger" id="delete_save" type="button"
+								        style="--bs-btn-padding-y: 3px; --bs-btn-padding-x: 3px; --bs-btn-font-size: 9px;"
+								        data-bs-toggle="modal" data-bs-target="#deletion_confirmation">
 									Удалить выбранное
 								</button>
 							</div>
@@ -50,11 +58,31 @@
 						</select>
 					</div>
 				</div>
-				<div class="type_of_product mb-3">
-					<select class="selectpicker" id="type_of_product">
-						<option>Общее</option>
-						<option>По категориям товара</option>
-					</select>
+				<div class="row">
+					<div class="type_of_plane col-6 mx-auto my-3">
+						<select class="selectpicker" id="type_of_plane" data-width="100%">
+							<option>Общий</option>
+							<option>По пользователям</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="quantity_of_product col-6 mx-auto mb-3">
+						<label class="form-label mb-0" for="quantity_of_tare" style="font-size: 14px">Планируемое количество реализовать "ПЭТ-тара":</label>
+						<input class="form-control" id="quantity_of_tare" type="number" value="0" min="0">
+					</div>
+					<div class="quantity_of_product col-6 mx-auto mb-3">
+						<label class="form-label mb-0" for="quantity_of_drink" style="font-size: 14px">Планируемое количество реализовать "Вода, напитки":</label>
+						<input class="form-control" id="quantity_of_drink" type="number" value="0" min="0">
+					</div>
+				</div>
+				<div class="row">
+					<div class="type_of_product col-6 mx-auto mb-3">
+						<select class="selectpicker" id="type_of_product" data-width="100%">
+							<option>Общее</option>
+							<option>По категориям товара</option>
+						</select>
+					</div>
 				</div>
 				<div class="chose_users">
 					<div class="container min-h-100 bg-light p-1">
@@ -67,10 +95,14 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-secondary shadow-sm" type="button" data-bs-dismiss="modal">Закрыть</button>
-				<button class="btn btn-primary shadow-sm" id="apply" type="button">Применить</button>
+				<button class="btn btn-secondary shadow-sm" type="button" data-bs-dismiss="modal">
+					Закрыть
+				</button>
+				<button class="btn btn-primary shadow-sm" id="apply" type="button">
+					Применить
+				</button>
 				<button class="btn btn-success shadow-sm" id="save" type="button" data-bs-target="#settingsSaved" data-bs-toggle="modal">
-					Сохранить
+					Сохранить план
 				</button>
 			</div>
 		</div>
@@ -91,10 +123,12 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-secondary shadow-sm" type="button" data-bs-target="#settingsModal" data-bs-toggle="modal">
+				<button class="btn btn-secondary shadow-sm" type="button" data-bs-target="#settingsModal"
+				        data-bs-toggle="modal">
 					Отмена
 				</button>
-				<button class="btn btn-success shadow-sm" id="push_save" type="button" data-bs-target="#settingsModal" data-bs-toggle="modal">
+				<button class="btn btn-success shadow-sm" id="push_save" type="button" data-bs-target="#settingsModal"
+				        data-bs-toggle="modal">
 					<!-- data-bs-dismiss="modal" -->
 					Сохранить
 				</button>
@@ -103,7 +137,8 @@
 	</div>
 </div>
 <!-- Модальное окно с удалением настроек плана -->
-<div class="modal fade" id="deletion_confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deletion-confirmation" aria-hidden="true">
+<div class="modal fade" id="deletion_confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="deletion-confirmation" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">

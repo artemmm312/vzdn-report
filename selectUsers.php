@@ -24,8 +24,11 @@ while ($item = $usersData->Fetch()) {
 		        data-none-results-text="Ничего не найдено {0}"
 		        data-count-selected-text="Выбрано {0} (из {1})">
 			<?php
+				$exception_users = [1, 3, 4, 5, 8, 9, 18, 20, 22, 23, 24];
 				foreach ($fio as $key => $value) {
-					echo "<option value='$key'>" . $value . "</option>";
+					if(in_array($key, $exception_users, false) === false) {
+						echo "<option value='$key'>" . $value . "</option>";
+					}
 				}
 			?>
 		</select>

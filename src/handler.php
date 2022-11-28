@@ -43,13 +43,44 @@ switch ($general_settings['season']) {
 		break;
 }
 
-$users_settings = $settings[1];
-$usersID = [];
-foreach ($users_settings as $key) {
-	$usersID[] = $key['id'];
+$filter = null;
+if ($general_settings['type_of_plane'] === 'Общий') {
+	$filter = ['CATEGORY_ID' => 0, 'STAGE_ID' => 'WON', '>=CLOSEDATE' => $first_date, '<CLOSEDATE' => $last_date];
+} elseif ($general_settings['type_of_plane'] === 'По пользователям') {
+	$users_plane = $settings[1];
+	$usersID = [];
+	foreach ($users_plane as $key) {
+		$usersID[] = $key['id'];
+	}
+	$filter = ['CATEGORY_ID' => 0, 'ASSIGNED_BY_ID' => $usersID, 'STAGE_ID' => 'WON', '>=CLOSEDATE' => $first_date, '<CLOSEDATE' => $last_date];
 }
 
-$filter = ['CATEGORY_ID' => 0, 'ASSIGNED_BY_ID' => $usersID, 'STAGE_ID' => 'WON', '>=CLOSEDATE' => $first_date, '<CLOSEDATE' => $last_date];
+$Deals = CCrmDeal::GetListEx([], $filter, false, false, []);
+$data_deals = [];
+while ($record = $Deals->Fetch()) {
+	$data_products = [];
+	$products = CCrmDeal::LoadProductRows($record['ID']);
+	foreach ($products as $product) {
+		$ins_product = CCrmProduct::GetByID($product['PRODUCT_ID']);
+		$data_products[] = ['PRODUCT_ID' => $product['PRODUCT_ID'],
+			'QUANTITY' => $product['QUANTITY'],
+			'CATALOG_ID' => $ins_product['CATALOG_ID'],
+			'SECTION_ID' => $ins_product['SECTION_ID']];
+	}
+	$data_deals[$record['ASSIGNED_BY_ID']][] =
+		[
+			'ID' => $record['ID'],
+			'STAGE_ID' => $record['STAGE_ID'],
+			'NAME' => "{$record['ASSIGNED_BY_NAME']} {$record['ASSIGNED_BY_LAST_NAME']}",
+			'OPPORTUNITY' => $record['OPPORTUNITY'],
+			'ASSIGNED_BY_ID' => $record['ASSIGNED_BY_ID'],
+			'CLOSEDATE' => $record['CLOSEDATE'],
+			'PRODUCTS' => $data_products
+		];
+}
+
+
+/*$filter = ['CATEGORY_ID' => 0, 'ASSIGNED_BY_ID' => $usersID, 'STAGE_ID' => 'WON', '>=CLOSEDATE' => $first_date, '<CLOSEDATE' => $last_date];
 $Deals = CCrmDeal::GetListEx([], $filter, false, false, []);
 
 $users_deals = [];
@@ -70,6 +101,6 @@ while ($record = $Deals->Fetch()) {
 		'ASSIGNED_BY_ID' => $record['ASSIGNED_BY_ID'],
 		'CLOSEDATE' => $record['CLOSEDATE'],
 		'PRODUCTS' => $users_products];
-}
+}*/
 
-echo json_encode($users_deals);
+echo json_encode($data_deals);
