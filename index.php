@@ -31,6 +31,11 @@
 		<p class="text-date m-2 p-2 text-center shadow-sm"></p>
 	</div>
 </div>
+<?php
+	global $USER;
+	$userId = $USER->GetID();
+	echo "<script type='text/javascript'>let userID = $userId</script>";
+?>
 <script type="text/javascript" src="js/loader.js"></script>
 <script type="text/javascript" src="js/functions.js"></script>
 <script type="text/javascript" src="js/buttons.js"></script>

@@ -122,12 +122,28 @@ $('#apply').on('click', function () {
 $saved_name = $('#saved_name');
 
 //дефолтное значение поля ввода имени сохраняемой настройки
-$('#save').on('click', function () {
-	if($season.val() === 'Месяц' || $season.val() === 'Квартал') {
+/*$('#save').on('click', function () {
+	console.log($type_of_plane.val());
+	if($season.val() === 'Месяц' || $season.val() === 'Квартал' && $type_of_plane.val() === 'Общий') {
+		$saved_name.val(`${$month_or_quarter.find('option:selected').text()} ${$year.val()} Общий`);
+	} else if($season.val() === 'Год' && $type_of_plane.val() === 'Общий') {
+		$saved_name.val(`${$year.val()} Общий`)
+	} else if($season.val() === 'Месяц' || $season.val() === 'Квартал') {
 		$saved_name.val(`${$month_or_quarter.find('option:selected').text()} ${$year.val()}`);
-
 	} else if($season.val() === 'Год') {
 		$saved_name.val(`${$year.val()}`)
+	}
+});*/
+
+$('#save').on('click', function () {
+	console.log($type_of_plane.val());
+	if($season.val() === 'Месяц' || $season.val() === 'Квартал') {
+		$saved_name.val(`${$month_or_quarter.find('option:selected').text()} ${$year.val()}`);
+	} else if($season.val() === 'Год') {
+		$saved_name.val(`${$year.val()}`)
+	}
+	if($type_of_plane.val() === 'Общий') {
+		$saved_name.val(`${$saved_name.val() + ' Общий'}`);
 	}
 });
 
