@@ -52,7 +52,7 @@ if ($general_settings['type_of_plane'] === 'Общий') {
 	foreach ($users_plane as $key) {
 		$usersID[] = $key['id'];
 	}
-	$filter = ['CATEGORY_ID' => 0, 'ASSIGNED_BY_ID' => $usersID, 'STAGE_ID' => 'WON', '>=CLOSEDATE' => $first_date, '<CLOSEDATE' => $last_date];
+	$filter = ['CATEGORY_ID' => 0, 'ASSIGNED_BY_ID' => $usersID, 'STAGE_ID' => 'WON', '>=CLOSEDATE' => $first_date, '<CLOSEDATE' => $last_date, 'CHECK_PERMISSIONS' => 'N'];
 }
 
 $Deals = CCrmDeal::GetListEx([], $filter, false, false, []);
@@ -80,27 +80,32 @@ while ($record = $Deals->Fetch()) {
 }
 
 
-/*$filter = ['CATEGORY_ID' => 0, 'ASSIGNED_BY_ID' => $usersID, 'STAGE_ID' => 'WON', '>=CLOSEDATE' => $first_date, '<CLOSEDATE' => $last_date];
-$Deals = CCrmDeal::GetListEx([], $filter, false, false, []);
+//var_dump($data_deals);
+global $USER;
+$userId = $USER->GetID();
 
-$users_deals = [];
-while ($record = $Deals->Fetch()) {
-	$users_products = [];
-	$products = CCrmDeal::LoadProductRows($record['ID']);
-	foreach ($products as $product) {
-		$ins_product = CCrmProduct::GetByID($product['PRODUCT_ID']);
-		$users_products[] = ['PRODUCT_ID' => $product['PRODUCT_ID'],
-			'QUANTITY' => $product['QUANTITY'],
-			'CATALOG_ID' => $ins_product['CATALOG_ID'],
-			'SECTION_ID' => $ins_product['SECTION_ID']];
+
+$result = array_filter($data_deals,
+	function($key) use($userId) {
+	$top_user = 1;
+	$main_users = [4, 5, 7];
+	$main_of_group = [14, 15];
+	$one_group = [10, 11, 12, 13, 17, 19];
+	if($userId === $top_user || in_array($userId, $main_users)) {
+		return $key;
 	}
-	$users_deals[$record['ASSIGNED_BY_ID']][] = ['ID' => $record['ID'],
-		'STAGE_ID' => $record['STAGE_ID'],
-		'NAME' => "{$record['ASSIGNED_BY_NAME']} {$record['ASSIGNED_BY_LAST_NAME']}",
-		'OPPORTUNITY' => $record['OPPORTUNITY'],
-		'ASSIGNED_BY_ID' => $record['ASSIGNED_BY_ID'],
-		'CLOSEDATE' => $record['CLOSEDATE'],
-		'PRODUCTS' => $users_products];
-}*/
+	if(in_array($userId, $main_of_group)) {
+		if($key === $userId || in_array($key, $one_group)) {
+			return $key;
+		}
+	}
+	if(in_array($userId, $one_group)) {
+		if(in_array($key, $one_group)) {
+			return $key;
+		}
+	}
+}, ARRAY_FILTER_USE_KEY);
+//var_dump($result);
+echo json_encode($result);
+//echo json_encode($data_deals);
 
-echo json_encode($data_deals);

@@ -184,24 +184,26 @@ function getSettings(file_name = '') {
 				users_plane = data[1];
 				$type_of_product.selectpicker('val', general_settings.type_of_product);
 				for (let i = 0; i < users_plane.length; i++) {
-					$('.users_list').append(`<li class="list-group-item d-flex justify-content-start align-items-center row" id="${users_plane[i].id}" value="${users_plane[i].id}">
-						<div class="user col-6 d-flex justify-content-between">
-							<button id="deleteUser" type="button" class="btn-close" aria-label="remove user from the list"></button>
-							<p class="mb-0 text-center" id="userName">${users_plane[i].name}</p>
-						</div>  
-					  <div class="overall_product col-3">
-					    <label for="overall_product" class="form-label mb-0">Общее</label>
-					    <input type="number" class="form-control" id="overall_product" value="${users_plane[i].overall_product}" min="0">
-					  </div>
-					  <div class="tare_product col-3">
-					    <label for="tare_product" class="form-label mb-0">ПЭТ-тара</label>
-					    <input type="number" class="form-control" id="tare_product" value="${users_plane[i].tare_product}" min="0">
-					  </div>
-					  <div class="drink_product col-3">
-					    <label for="drink_product" class="form-label mb-0">Вода, напитки</label>
-					    <input type="number" class="form-control" id="drink_product" value="${users_plane[i].drink_product}" min="0">
-					  </div>
-					</li>`);
+					$('.users_list').append(`
+						<li class="list-group-item d-flex justify-content-start align-items-center row" id="${users_plane[i].id}" value="${users_plane[i].id}">
+							<div class="user col-6 d-flex justify-content-between">
+								<button id="deleteUser" type="button" class="btn-close" aria-label="remove user from the list"></button>
+								<p class="mb-0 text-center" id="userName">${users_plane[i].name}</p>
+							</div>  
+						  <div class="overall_product col-3">
+						    <label for="overall_product" class="form-label mb-0">Общее</label>
+						    <input type="number" class="form-control" id="overall_product" value="${users_plane[i].overall_product}" min="0">
+						  </div>
+						  <div class="tare_product col-3">
+						    <label for="tare_product" class="form-label mb-0">ПЭТ-тара</label>
+						    <input type="number" class="form-control" id="tare_product" value="${users_plane[i].tare_product}" min="0">
+						  </div>
+						  <div class="drink_product col-3">
+						    <label for="drink_product" class="form-label mb-0">Вода, напитки</label>
+						    <input type="number" class="form-control" id="drink_product" value="${users_plane[i].drink_product}" min="0">
+						  </div>
+						</li>
+					`);
 				}
 				choseTypeProduct($type_of_product.val());
 			}
@@ -210,15 +212,16 @@ function getSettings(file_name = '') {
 }
 
 //получение данных от сервера и формирование отчета
-function reportGeneration() {
+async function reportGeneration() {
 	$.ajax({
-		type: 'POST', url: 'src/handler.php', success: function (response) {
+		type: 'POST', url: 'src/handler.php', success: await function (response) {
 			let data = jQuery.parseJSON(response);
 			let text_of_date = $season.val() === 'Год' ?
 				`Показатели по плану продаж за ${$year.val()} год :` :
 				`Показатели по плану продаж за ${$month_or_quarter.find('option:selected').text()} ${$year.val()} года :`;
 			$('.text-date').append(text_of_date);
 			let $main = $('.main');
+			console.log('pizdec');
 			if ($type_of_plane.val() === 'Общий') {
 				let plane_quantity_of_tare = overall_plane.quantity_of_tare;
 				let plane_quantity_of_drink = overall_plane.quantity_of_drink;
@@ -339,7 +342,6 @@ function reportGeneration() {
 			} else if ($type_of_plane.val() === 'По пользователям') {
 				for (let user_setting of users_plane) {
 					let name = user_setting.name;
-					//if (user_setting.id in data) {
 					let id = user_setting.id;
 					let plane_of_overall_product = user_setting.overall_product;
 					let plane_of_tare_product = user_setting.tare_product;
@@ -368,105 +370,162 @@ function reportGeneration() {
 					let pct_tare_product = ((100 * tare_product) / plane_of_tare_product).toFixed(2);
 					switch ($type_of_product.val()) {
 						case 'Общее':
-							$main.append(`<div class="d-flex flex-column mb-3" id="${user_setting.id}" data-id="${user_setting.id}">
-									<h4 class="name">${name}</h4>
-									<label></label>
-									<div class="progress mb-3 shadow">
-										<div class="progress-bar ${pct_overall_product >= 100 ? 'progress-bar-striped progress-bar-animated' : ''}"
-										 role="progressbar" aria-label="tare_product" style="width: ${pct_overall_product}%;" aria-valuenow="${pct_overall_product}" aria-valuemin="0" aria-valuemax="100">
-											${pct_overall_product}%
+							$main.append(
+								`<div class="user_plane_data" data-id="${user_setting.id}">
+									<div class="d-flex flex-column mb-3"> 
+										<h4 class="name">${name}</h4>
+										<label></label>
+										<div class="progress mb-3 shadow">
+											<div class="progress-bar ${pct_overall_product >= 100 ? 'progress-bar-striped progress-bar-animated' : ''}"
+											 role="progressbar" aria-label="tare_product" style="width: ${pct_overall_product}%;" aria-valuenow="${pct_overall_product}" aria-valuemin="0" aria-valuemax="100">
+												${pct_overall_product}%
+											</div>
+										</div>
+										<div class="row g-2">
+											<div class="col-3">
+												<div class="border border-info bg-info bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+													<p class="p-2 m-0">Выполненно по "Общему" плану:<br> ${overall_product} / ${plane_of_overall_product} единиц.</p>
+												</div>
+											</div>
+											<div class="col-3">
+												<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+													<p class="p-2 m-0">Из "Общего" плана "Пэт-тара" составляет:<br> ${tare_product} единиц.</p>
+												</div>
+											</div>
+											<div class="col-3">
+												<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+													<p class="p-2 m-0">Из "Общего" плана "Вода, напитки" составляет:<br> ${drink_product} единиц.</p>
+												</div>
+											</div>
+											<div class="col-3">
+												<div class="border border-success bg-success bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+													<p class="p-2 m-0">На общую сумму:<br> ${opportunity} руб.</p>
+												</div>
+											</div>
 										</div>
 									</div>
-									<div class="row g-2">
-										<div class="col-3">
-											<div class="border border-info bg-info bg-opacity-25 d-flex justify-content-center align-items-center h-100">
-												<p class="p-2 m-0">Выполненно по "Общему" плану:<br> ${overall_product} / ${plane_of_overall_product} единиц.</p>
-											</div>
-										</div>
-										<div class="col-3">
-											<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
-												<p class="p-2 m-0">Из "Общего" плана "Пэт-тара" составляет:<br> ${tare_product} единиц.</p>
-											</div>
-										</div>
-										<div class="col-3">
-											<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
-												<p class="p-2 m-0">Из "Общего" плана "Вода, напитки" составляет:<br> ${drink_product} единиц.</p>
-											</div>
-										</div>
-										<div class="col-3">
-											<div class="border border-success bg-success bg-opacity-25 d-flex justify-content-center align-items-center h-100">
-												<p class="p-2 m-0">На общую сумму:<br> ${opportunity} руб.</p>
-											</div>
-										</div>
-									</div>
-								</div>`);
+								</div>`
+							);
 							break;
 						case 'По категориям товара':
-							$main.append(`<div class="d-flex flex-column mb-3" id="${user_setting.id}" data-id="${user_setting.id}">
-									<h4 class="name">${name}</h4>
-									<label>Пэт-тара</label>
-									<div class="progress mb-2 shadow">
-										<div class="progress-bar ${pct_tare_product > 100 ? 'progress-bar-striped progress-bar-animated' : ''}"
-										 role="progressbar" aria-label="tare_product" style="width: ${pct_tare_product}%;" aria-valuenow="${pct_tare_product}" aria-valuemin="0" aria-valuemax="100">
-											${pct_tare_product}%
+							$main.append(`
+								<div class="user_plane_data" data-id="${user_setting.id}">
+									<div class="d-flex flex-column mb-3">
+										<h4 class="name">${name}</h4>
+										<label>Пэт-тара</label>
+										<div class="progress mb-2 shadow">
+											<div class="progress-bar ${pct_tare_product >= 100 ? 'progress-bar-striped progress-bar-animated' : ''}"
+											 role="progressbar" aria-label="tare_product" style="width: ${pct_tare_product}%;" aria-valuenow="${pct_tare_product}" aria-valuemin="0" aria-valuemax="100">
+												${pct_tare_product}%
+											</div>
+										</div>
+										<label>Вода, напитки</label>
+										<div class="progress mb-3 shadow">
+											<div class="progress-bar ${pct_drink_product >= 100 ? 'progress-bar-striped progress-bar-animated' : ''}"
+											 role="progressbar" aria-label="drink_product" style="width: ${pct_drink_product}%;" aria-valuenow="${pct_drink_product}" aria-valuemin="0" aria-valuemax="100">
+												${pct_drink_product}%
+											</div>
+										</div>
+										<div class="row g-2">
+											<div class="col-3">
+												<div class="border border-info bg-info bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+													<p class="p-2 m-0">Выполненно по плану "Пэт-тара":<br> ${tare_product} / ${plane_of_tare_product} единиц.</p>
+												</div>
+											</div>
+											<div class="col-3">
+												<div class="border border-info bg-info bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+													<p class="p-2 m-0">Выполненно по плану "Вода, напитки":<br> ${drink_product} / ${plane_of_drink_product} единиц.</p>
+												</div>
+											</div>
+											<div class="col-3">
+												<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+													<p class="p-2 m-0">Общее количество реализованного товара:<br> ${overall_product} единиц.</p>
+												</div>
+											</div>
+											<div class="col-3">
+												<div class="border border-success bg-success bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+													<p class="p-2 m-0">На общую сумму:<br> ${opportunity} руб.</p>
+												</div>
+											</div>
 										</div>
 									</div>
-									<label>Вода, напитки</label>
-									<div class="progress mb-3 shadow">
-										<div class="progress-bar ${pct_drink_product > 100 ? 'progress-bar-striped progress-bar-animated' : ''}"
-										 role="progressbar" aria-label="drink_product" style="width: ${pct_drink_product}%;" aria-valuenow="${pct_drink_product}" aria-valuemin="0" aria-valuemax="100">
-											${pct_drink_product}%
-										</div>
-									</div>
-									<div class="row g-2">
-										<div class="col-3">
-											<div class="border border-info bg-info bg-opacity-25 d-flex justify-content-center align-items-center h-100">
-												<p class="p-2 m-0">Выполненно по плану "Пэт-тара":<br> ${tare_product} / ${plane_of_tare_product} единиц.</p>
-											</div>
-										</div>
-										<div class="col-3">
-											<div class="border border-info bg-info bg-opacity-25 d-flex justify-content-center align-items-center h-100">
-												<p class="p-2 m-0">Выполненно по плану "Вода, напитки":<br> ${drink_product} / ${plane_of_drink_product} единиц.</p>
-											</div>
-										</div>
-										<div class="col-3">
-											<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
-												<p class="p-2 m-0">Общее количество реализованного товара:<br> ${overall_product} единиц.</p>
-											</div>
-										</div>
-										<div class="col-3">
-											<div class="border border-success bg-success bg-opacity-25 d-flex justify-content-center align-items-center h-100">
-												<p class="p-2 m-0">На общую сумму:<br> ${opportunity} руб.</p>
-											</div>
-										</div>
-									</div>
-								</div>`);
+								</div>
+							`);
 							break;
 					}
-					//}
-					/*else {
-						$main.append(`<div class="d-flex flex-column" id="${user_setting.id}" data-id="${user_setting.id}">
-							<h4 class="name">${name}</h4>
-							<p class="col-12">Данных по данному сотруднику не обнаруженно.</p>
-						</div>`);
-					}*/
 				}
 			}
 		}
 	})
 }
 
+async function test(userID) {
+	let top_user = 1;
+	let main_users = [4, 5, 7];
+	let main_of_group = [14, 15];
+	let one_group = [10, 11, 12, 13, 17, 19];
+	console.log($('.user_plane_data'))
+	$('.user_plane_data').css('display', 'none');
+	if (main_users.includes(userID) || top_user === userID) {
+		$('.user_plane_data').css('display', 'block');
+	} else if (main_of_group.includes(userID)) {
+		$(`.user_plane_data [data-id = ${userID}]`).css('display', 'block');
+		for (let id of one_group) {
+			$(`.user_plane_data [data-id = ${id}]`).css('display', 'block')
+		}
+	} else if (one_group.includes(userID)) {
+		$(`.user_plane_data [data-id = ${userID}]`).css('display', 'block');
+	} else {
+		$('.user_plane_data').css('display', 'none');
+	}
+
+	/*	$( window ).on( "load", function() {
+			console.log( "window loaded" );
+			console.log($('.user_plane_data'));
+			$('.user_plane_data').css('display', 'none');
+			if(main_users.includes(userID) || top_user === userID) {
+				$('.user_plane_data').css('display', 'block');
+			} else if(main_of_group.includes(userID)) {
+				$(`.user_plane_data [data-id = ${userID}]`).css('display', 'block');
+				for (let id of one_group) {
+					$(`.user_plane_data [data-id = ${id}]`).css('display', 'block')
+				}
+			} else if(one_group.includes(userID)) {
+				$(`.user_plane_data [data-id = ${userID}]`).css('display', 'block');
+			} else {
+				$('.user_plane_data').css('display', 'none');
+			}
+		})*/
+}
+
 console.log(userID);
-//права доступа
+/*//права доступа
 let top_user = 1;
 let main_users = [4, 5, 7];
 let main_of_group = [14, 15];
 let one_group = [10, 11, 12, 13, 17, 19];
 
-$main_div = $('.main div');
-$main_div.css('display', 'none');
+//$main_div = $('.main div');
+//$main = $('.main');
+//$main_div.css('display', 'none');
+//$('.main > div').css('display', 'none');
+//$main.children().css('display', 'none');
+$('[data-id]').css('display', 'none');
 
-if(main_users.includes(userID) || top_user === userID) {
+if (main_users.includes(userID) || top_user === userID) {
+	$('[data-id]').css('display', 'block');
+}
+if (main_of_group.includes(userID)) {
+	$('[data-id]').find(`[data-id = ${userID}]`).css('display', 'block');
+	for (let id of one_group) {
+		$('[data-id]').find(`[data-id = ${id}]`).css('display', 'block');
+	}
+}
+if (one_group.includes(userID)) {
+	$('[data-id]').find(`[data-id = ${userID}]`).css('display', 'block');
+	//$('.main div[data-id = userID]').css('display', 'block');
+}*/
+/*if(main_users.includes(userID) || top_user === userID) {
 	$main_div.css('display', 'block');
 }
 if(main_of_group.includes(userID)) {
@@ -478,7 +537,7 @@ if(main_of_group.includes(userID)) {
 if (one_group.includes(userID)) {
 	$main_div.find(`[data-id = ${userID}]`).css('display', 'block');
 	//$('.main div[data-id = userID]').css('display', 'block');
-}
+}*/
 
 //селект выбора сохранённой настройки
 let $saved_settings = $('#saved_settings');

@@ -16,6 +16,11 @@
 <script type="text/javascript"
         src="https://cdn.datatables.net/v/bs5/dt-1.12.1/date-1.1.2/sb-1.3.4/sp-2.0.2/datatables.min.js"></script
 
+<?php
+global $USER;
+$userId = $USER->GetID();
+?>
+
 <div class="container">
 	<div class="header d-flex justify-content-between">
 		<div class="title fs-3 fw-semibold">
@@ -31,13 +36,11 @@
 		<p class="text-date m-2 p-2 text-center shadow-sm"></p>
 	</div>
 </div>
-<?php
-	global $USER;
-	$userId = $USER->GetID();
-	echo "<script type='text/javascript'>let userID = $userId</script>";
-?>
-<script type="text/javascript" src="js/loader.js"></script>
+<script type='text/javascript'>
+	let userID = <?php echo $userId; ?>
+</script>
 <script type="text/javascript" src="js/functions.js"></script>
 <script type="text/javascript" src="js/buttons.js"></script>
+<script type="text/javascript" src="js/loader.js"></script>
 
 <?php require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/footer.php"); ?>
