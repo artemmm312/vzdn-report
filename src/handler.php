@@ -81,7 +81,7 @@ while ($record = $Deals->Fetch()) {
 
 
 //var_dump($data_deals);
-global $USER;
+/*global $USER;
 $userId = $USER->GetID();
 
 
@@ -106,6 +106,6 @@ $result = array_filter($data_deals,
 	}
 }, ARRAY_FILTER_USE_KEY);
 //var_dump($result);
-echo json_encode($result);
-//echo json_encode($data_deals);
+echo json_encode($result);*/
+echo json_encode($data_deals);
 

@@ -213,8 +213,8 @@ function getSettings(file_name = '') {
 
 //получение данных от сервера и формирование отчета
 async function reportGeneration() {
-	$.ajax({
-		type: 'POST', url: 'src/handler.php', success: await function (response) {
+	await $.ajax({
+		type: 'POST', url: 'src/handler.php', success: function (response) {
 			let data = jQuery.parseJSON(response);
 			let text_of_date = $season.val() === 'Год' ?
 				`Показатели по плану продаж за ${$year.val()} год :` :
@@ -459,85 +459,43 @@ async function reportGeneration() {
 	})
 }
 
-async function test(userID) {
+//отображение данных в зависимости от прав
+async function checkRights(userID) {
 	let top_user = 1;
 	let main_users = [4, 5, 7];
 	let main_of_group = [14, 15];
 	let one_group = [10, 11, 12, 13, 17, 19];
-	console.log($('.user_plane_data'))
 	$('.user_plane_data').css('display', 'none');
 	if (main_users.includes(userID) || top_user === userID) {
 		$('.user_plane_data').css('display', 'block');
-	} else if (main_of_group.includes(userID)) {
-		$(`.user_plane_data [data-id = ${userID}]`).css('display', 'block');
+	}
+	if (main_of_group.includes(userID)) {
+		console.log($(`.user_plane_data[data-id = ${userID}]`));
+		$(`.user_plane_data[data-id = ${userID}]`).css('display', 'block');
 		for (let id of one_group) {
-			$(`.user_plane_data [data-id = ${id}]`).css('display', 'block')
+			$(`.user_plane_data[data-id = ${id}]`).css('display', 'block')
 		}
-	} else if (one_group.includes(userID)) {
-		$(`.user_plane_data [data-id = ${userID}]`).css('display', 'block');
-	} else {
-		$('.user_plane_data').css('display', 'none');
 	}
-
-	/*	$( window ).on( "load", function() {
-			console.log( "window loaded" );
-			console.log($('.user_plane_data'));
-			$('.user_plane_data').css('display', 'none');
-			if(main_users.includes(userID) || top_user === userID) {
-				$('.user_plane_data').css('display', 'block');
-			} else if(main_of_group.includes(userID)) {
-				$(`.user_plane_data [data-id = ${userID}]`).css('display', 'block');
-				for (let id of one_group) {
-					$(`.user_plane_data [data-id = ${id}]`).css('display', 'block')
-				}
-			} else if(one_group.includes(userID)) {
-				$(`.user_plane_data [data-id = ${userID}]`).css('display', 'block');
-			} else {
-				$('.user_plane_data').css('display', 'none');
-			}
-		})*/
-}
-
-console.log(userID);
-/*//права доступа
-let top_user = 1;
-let main_users = [4, 5, 7];
-let main_of_group = [14, 15];
-let one_group = [10, 11, 12, 13, 17, 19];
-
-//$main_div = $('.main div');
-//$main = $('.main');
-//$main_div.css('display', 'none');
-//$('.main > div').css('display', 'none');
-//$main.children().css('display', 'none');
-$('[data-id]').css('display', 'none');
-
-if (main_users.includes(userID) || top_user === userID) {
-	$('[data-id]').css('display', 'block');
-}
-if (main_of_group.includes(userID)) {
-	$('[data-id]').find(`[data-id = ${userID}]`).css('display', 'block');
-	for (let id of one_group) {
-		$('[data-id]').find(`[data-id = ${id}]`).css('display', 'block');
+	if (one_group.includes(userID)) {
+		$(`.user_plane_data[data-id = ${userID}]`).css('display', 'block');
 	}
 }
-if (one_group.includes(userID)) {
-	$('[data-id]').find(`[data-id = ${userID}]`).css('display', 'block');
-	//$('.main div[data-id = userID]').css('display', 'block');
-}*/
-/*if(main_users.includes(userID) || top_user === userID) {
-	$main_div.css('display', 'block');
-}
-if(main_of_group.includes(userID)) {
-	$main_div.find(`[data-id = ${userID}]`).css('display', 'block');
-	for(let id of one_group) {
-		$main_div.find(`[data-id = ${id}]`).css('display', 'block');
+
+//прогрузка данных, а затем проверка прав на просмотр данных
+	async function loader() {
+		await reportGeneration();
+		await checkRights(userID);
 	}
-}
-if (one_group.includes(userID)) {
-	$main_div.find(`[data-id = ${userID}]`).css('display', 'block');
-	//$('.main div[data-id = userID]').css('display', 'block');
-}*/
+
+	//сокрытие кнопки настройки от всех кроме топ-юзера
+	function checkTopUser(userID) {
+		let top_user = 1;
+		if(userID === top_user) {
+			$('#settings_btn').css('display', 'block');
+		} else {
+			$('#settings_btn').css('display', 'none');
+		}
+	}
 
 //селект выбора сохранённой настройки
 let $saved_settings = $('#saved_settings');

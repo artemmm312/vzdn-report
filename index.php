@@ -15,12 +15,10 @@
         src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
 <script type="text/javascript"
         src="https://cdn.datatables.net/v/bs5/dt-1.12.1/date-1.1.2/sb-1.3.4/sp-2.0.2/datatables.min.js"></script
-
 <?php
 global $USER;
 $userId = $USER->GetID();
 ?>
-
 <div class="container">
 	<div class="header d-flex justify-content-between">
 		<div class="title fs-3 fw-semibold">
