@@ -221,7 +221,6 @@ async function reportGeneration() {
 				`Показатели по плану продаж за ${$month_or_quarter.find('option:selected').text()} ${$year.val()} года :`;
 			$('.text-date').append(text_of_date);
 			let $main = $('.main');
-			console.log('pizdec');
 			if ($type_of_plane.val() === 'Общий') {
 				let plane_quantity_of_tare = overall_plane.quantity_of_tare;
 				let plane_quantity_of_drink = overall_plane.quantity_of_drink;
@@ -465,15 +464,16 @@ async function checkRights(userID) {
 	let main_users = [4, 5, 7];
 	let main_of_group = [14, 15];
 	let one_group = [10, 11, 12, 13, 17, 19];
-	$('.user_plane_data').css('display', 'none');
+
+	let $user_plane_date = $('.user_plane_data');
+	$user_plane_date.css('display', 'none');
 	if (main_users.includes(userID) || top_user === userID) {
-		$('.user_plane_data').css('display', 'block');
+		$user_plane_date.css('display', 'block');
 	}
 	if (main_of_group.includes(userID)) {
-		console.log($(`.user_plane_data[data-id = ${userID}]`));
 		$(`.user_plane_data[data-id = ${userID}]`).css('display', 'block');
 		for (let id of one_group) {
-			$(`.user_plane_data[data-id = ${id}]`).css('display', 'block')
+			$(`.user_plane_data[data-id = ${id}]`).css('display', 'block');
 		}
 	}
 	if (one_group.includes(userID)) {
@@ -506,6 +506,7 @@ function getListSettings() {
 	$.ajax({
 		type: 'POST', url: 'src/getListSettings.php', success: function (response) {
 			let data = jQuery.parseJSON(response);
+			console.log(data);
 			for (let key in data) {
 				let reg = /\.json/;
 				if (data[key].match(reg)) {

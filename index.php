@@ -24,6 +24,13 @@ $userId = $USER->GetID();
 		<div class="title fs-3 fw-semibold">
 			<p class="shadow-sm">План продаж по количеству товара</p>
 		</div>
+		<div class="chose-save">
+			<select class="selectpicker m-auto" id="saved_plane"
+			        title="Выбор сохранённого плана"
+			        data-size="5"
+			        data-width="100%">
+			</select>
+		</div>
 		<div class="settings">
 			<?php require_once "settings.php" ?>
 		</div>
@@ -40,5 +47,79 @@ $userId = $USER->GetID();
 <script type="text/javascript" src="js/functions.js"></script>
 <script type="text/javascript" src="js/buttons.js"></script>
 <script type="text/javascript" src="js/loader.js"></script>
+
+<?php
+
+function pr($var)
+{
+	static $int = 0;
+	echo '<pre><b style="background: red;padding: 1px 5px;">' . $int . '</b> ';
+	print_r($var);
+	echo '</pre>';
+	$int++;
+}
+
+$dir = 'settings/saved';
+$scanned_directory = array_diff(scandir($dir), array('..', '.'));
+pr($scanned_directory);
+
+$top_user = '1';
+$main_users = ['4', '5', '7'];
+$main_of_group = ['14', '15'];
+$one_group = ['10', '11', '12', '13', '17', '19'];
+$result = [];
+foreach ($scanned_directory as $file) {
+	$test = json_decode(file_get_contents("settings/saved/" . $file), true);
+	switch ($test[0]['type_of_plane']) {
+		case 'Общий':
+			$result[] = $file;
+			break;
+		case 'По пользователям':
+			if ($userId === $top_user || in_array($userId, $main_users, true)) {
+				$result[] = $file;
+			}
+			if (in_array($userId, $main_of_group, true)) {
+				if (in_array($userId, $test[1], true)) {
+					$result[] = $file;
+				}
+				foreach ($one_group as $key) {
+					if (in_array($key, $test[1], true)) {
+						$result[] = $file;
+					}
+				}
+			}
+			if (in_array($userId, $one_group, true) && in_array($userId, $test[1], true)) {
+				$result[] = $file;
+			}
+			break;
+	}
+/*		if($test[0]['type_of_plane'] === 'Общий') {
+			$result[] = $file;
+		}
+		if($test[0]['type_of_plane'] === 'По пользователям') {
+			if ($userId === $top_user || in_array($userId, $main_users, true)) {
+				$result[] = $file;
+				pr($result);
+			}
+			if(in_array($userId, $main_of_group, true)) {
+				if(in_array($userId, $test[1], true)) {
+					$result[] = $file;
+				}
+				foreach ($one_group as $key) {
+					if(in_array($key, $test[1], true)) {
+						$result[] = $file;
+					}
+				}
+			}
+			if(in_array($userId, $one_group, true)) {
+				if(in_array($userId, $test[1], true)) {
+					$result[] = $file;
+				}
+			}
+		}*/
+}
+pr($result);
+
+?>
 
 <?php require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/footer.php"); ?>

@@ -20,14 +20,14 @@
 						<div class="row mt-1">
 							<div class="col-4">
 								<button class="btn btn-secondary" id="clear_save" type="button"
-								        style="--bs-btn-padding-y: 3px; --bs-btn-padding-x: 3px; --bs-btn-font-size: 10px;">Очистить
-									выбор
+								        style="--bs-btn-padding-y: 3px; --bs-btn-padding-x: 3px; --bs-btn-font-size: 10px;">
+									Очистить выбор
 								</button>
 							</div>
 							<div class="col-4">
 								<button class="btn btn-primary" id="load_save" type="button"
-								        style="--bs-btn-padding-y: 3px; --bs-btn-padding-x: 3px; --bs-btn-font-size: 9px;">Загрузить
-									выбранное
+								        style="--bs-btn-padding-y: 3px; --bs-btn-padding-x: 3px; --bs-btn-font-size: 9px;">
+									Загрузить выбранное
 								</button>
 							</div>
 							<div class="col-4">
