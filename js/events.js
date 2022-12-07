@@ -1,3 +1,12 @@
+//выбор и сразу загрузка сохранённого плана для всех пользователей
+$saved_plane.on('change', async function () {
+	let file_name = $saved_plane.val();
+	console.log(file_name);
+	$('.users_list li').remove();
+	await getSettings(file_name);
+	await saveSettings();
+	location.reload();
+});
 
 //кнопка очистить выбор селекта сохранённых настроек
 $clear_save = $('#clear_save');
@@ -18,7 +27,7 @@ $saved_settings.on('change', function () {
 		$clear_save.prop('disabled', false);
 		$load_save.prop('disabled', false);
 		$delete_save.prop('disabled', false);
-})
+});
 
 //кнопка очистки выбора сохранённой настройки
 $clear_save.on('click', function () {
@@ -51,12 +60,12 @@ $delete_save.on('click', function () {
 //событие выбора в селекте месяц/квартал/год
 $season.on('change', function () {
 	choseSeason($(this).val());
-})
+});
 
-//событие выбора плана
+//событие выбора типа плана
 $type_of_plane.on('change', function () {
 	choseTypePlane($(this).val());
-})
+});
 
 //событие выбора в селекте типа продуктов
 $type_of_product.on('change', function () {
@@ -122,19 +131,6 @@ $('#apply').on('click', function () {
 $saved_name = $('#saved_name');
 
 //дефолтное значение поля ввода имени сохраняемой настройки
-/*$('#save').on('click', function () {
-	console.log($type_of_plane.val());
-	if($season.val() === 'Месяц' || $season.val() === 'Квартал' && $type_of_plane.val() === 'Общий') {
-		$saved_name.val(`${$month_or_quarter.find('option:selected').text()} ${$year.val()} Общий`);
-	} else if($season.val() === 'Год' && $type_of_plane.val() === 'Общий') {
-		$saved_name.val(`${$year.val()} Общий`)
-	} else if($season.val() === 'Месяц' || $season.val() === 'Квартал') {
-		$saved_name.val(`${$month_or_quarter.find('option:selected').text()} ${$year.val()}`);
-	} else if($season.val() === 'Год') {
-		$saved_name.val(`${$year.val()}`)
-	}
-});*/
-
 $('#save').on('click', function () {
 	console.log($type_of_plane.val());
 	if($season.val() === 'Месяц' || $season.val() === 'Квартал') {

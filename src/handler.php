@@ -45,7 +45,7 @@ switch ($general_settings['season']) {
 
 $filter = null;
 if ($general_settings['type_of_plane'] === 'Общий') {
-	$filter = ['CATEGORY_ID' => 0, 'STAGE_ID' => 'WON', '>=CLOSEDATE' => $first_date, '<CLOSEDATE' => $last_date];
+	$filter = ['CATEGORY_ID' => 0, 'STAGE_ID' => 'WON', '>=CLOSEDATE' => $first_date, '<CLOSEDATE' => $last_date, 'CHECK_PERMISSIONS' => 'N'];
 } elseif ($general_settings['type_of_plane'] === 'По пользователям') {
 	$users_plane = $settings[1];
 	$usersID = [];

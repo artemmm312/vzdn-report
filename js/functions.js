@@ -118,7 +118,7 @@ function disOption() {
 }
 
 //сохранение настроек
-function saveSettings(file_name = '') {
+async function saveSettings(file_name = '') {
 	let settings;
 	let general_settings = {
 		'season': $season.val(),
@@ -148,8 +148,7 @@ function saveSettings(file_name = '') {
 		}
 		settings = [general_settings, users_plane];
 	}
-
-	$.ajax({
+	await $.ajax({
 		type: 'POST',
 		url: 'src/recordSettings.php',
 		data: {'settings': JSON.stringify(settings), 'file_name': file_name},
@@ -165,8 +164,8 @@ let overall_plane;
 let users_plane;
 
 //получение данных о настройках от сервера
-function getSettings(file_name = '') {
-	$.ajax({
+async function getSettings(file_name = '') {
+	await $.ajax({
 		type: 'POST', url: 'src/readSettings.php', data: {'file_name': file_name}, success: function (response) {
 			let data = jQuery.parseJSON(response);
 			general_settings = data[0];
@@ -249,7 +248,6 @@ async function reportGeneration() {
 					}
 					data_for_usersTable.push(userData);
 				}
-				console.log(data_for_usersTable);
 				let quantity_of_overall = quantity_of_tare + quantity_of_drink;
 				let pct_quantity_of_overall = ((100 * quantity_of_overall) / plane_quantity_overall).toFixed(2);
 				let pct_quantity_of_tare = ((100 * quantity_of_tare) / plane_quantity_of_tare).toFixed(2);
@@ -482,20 +480,20 @@ async function checkRights(userID) {
 }
 
 //прогрузка данных, а затем проверка прав на просмотр данных
-	async function loader() {
-		await reportGeneration();
-		await checkRights(userID);
-	}
+async function loader() {
+	await reportGeneration();
+	await checkRights(userID);
+}
 
-	//сокрытие кнопки настройки от всех кроме топ-юзера
-	function checkTopUser(userID) {
-		let top_user = 1;
-		if(userID === top_user) {
-			$('#settings_btn').css('display', 'block');
-		} else {
-			$('#settings_btn').css('display', 'none');
-		}
+//сокрытие кнопки настройки от всех кроме топ-юзера
+function checkTopUser(userID) {
+	let top_user = 1;
+	if (userID === top_user) {
+		$('#settings_btn').css('display', 'block');
+	} else {
+		$('#settings_btn').css('display', 'none');
 	}
+}
 
 //селект выбора сохранённой настройки
 let $saved_settings = $('#saved_settings');
@@ -506,7 +504,6 @@ function getListSettings() {
 	$.ajax({
 		type: 'POST', url: 'src/getListSettings.php', success: function (response) {
 			let data = jQuery.parseJSON(response);
-			console.log(data);
 			for (let key in data) {
 				let reg = /\.json/;
 				if (data[key].match(reg)) {
@@ -516,6 +513,28 @@ function getListSettings() {
 			}
 			$saved_settings.selectpicker('destroy');
 			$saved_settings.selectpicker('render');
+		}
+	})
+}
+
+//селект выбора сохранённого палана(настройки) для всех сотрудников
+let $saved_plane = $('#saved_plane');
+
+//получение списка сохранённых планов(настроек)
+function getListPlane() {
+	$saved_plane.find('option').remove();
+	$.ajax({
+		type: 'POST', url: 'src/getListPlane.php', success: function (response) {
+			let data = jQuery.parseJSON(response);
+			for (let key in data) {
+				let reg = /\.json/;
+				if (data[key].match(reg)) {
+					data[key] = data[key].replace(reg, '');
+				}
+				$saved_plane.append(`<option>${data[key]}</option>`);
+			}
+			$saved_plane.selectpicker('destroy');
+			$saved_plane.selectpicker('render');
 		}
 	})
 }
