@@ -42,5 +42,5 @@ foreach ($scanned_directory as $file) {
 			break;
 	}
 }
-
+header('Content-Type: application/json');
 echo json_encode(array_values($result));

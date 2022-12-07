@@ -3,12 +3,11 @@
 <?php
 \Bitrix\Main\Loader::includeModule('crm');
 
-$fd = fopen("../settings/lastSettings.json", 'r') or die("не удалось открыть файл");
-$settings = null;
-while (!feof($fd)) {
-	$settings = json_decode(fgets($fd), true);
+$fileContent = file_get_contents('../settings/lastSettings.json');
+if (false === $fileContent) {
+	die('не удалось открыть файл');
 }
-fclose($fd);
+$settings = json_decode($fileContent, true);
 
 $general_settings = $settings[0];
 $first_date = null;
@@ -78,34 +77,5 @@ while ($record = $Deals->Fetch()) {
 			'PRODUCTS' => $data_products
 		];
 }
-
-
-//var_dump($data_deals);
-/*global $USER;
-$userId = $USER->GetID();
-
-
-$result = array_filter($data_deals,
-	function($key) use($userId) {
-	$top_user = 1;
-	$main_users = [4, 5, 7];
-	$main_of_group = [14, 15];
-	$one_group = [10, 11, 12, 13, 17, 19];
-	if($userId === $top_user || in_array($userId, $main_users)) {
-		return $key;
-	}
-	if(in_array($userId, $main_of_group)) {
-		if($key === $userId || in_array($key, $one_group)) {
-			return $key;
-		}
-	}
-	if(in_array($userId, $one_group)) {
-		if(in_array($key, $one_group)) {
-			return $key;
-		}
-	}
-}, ARRAY_FILTER_USE_KEY);
-//var_dump($result);
-echo json_encode($result);*/
+header('Content-Type: application/json');
 echo json_encode($data_deals);
-

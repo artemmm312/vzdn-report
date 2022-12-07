@@ -27,7 +27,8 @@ while ($item = $usersData->Fetch()) {
 				$exception_users = [1, 3, 4, 5, 8, 9, 18, 20, 22, 23, 24];
 				foreach ($fio as $key => $value) {
 					if(in_array($key, $exception_users, false) === false) {
-						echo "<option value='$key'>" . $value . "</option>";
+						$key = htmlentities($key);
+						echo "<option value='$key'>" . htmlentities($value) . "</option>";
 					}
 				}
 			?>
