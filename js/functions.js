@@ -214,7 +214,7 @@ async function getSettings(file_name = '') {
 async function reportGeneration() {
 	await $.ajax({
 		type: 'POST', url: 'src/handler.php', success: function (response) {
-			let data = jQuery.parseJSON(response);
+			let data = response;
 			let text_of_date = $season.val() === 'Год' ?
 				`Показатели по плану продаж за ${$year.val()} год :` :
 				`Показатели по плану продаж за ${$month_or_quarter.find('option:selected').text()} ${$year.val()} года :`;
@@ -255,9 +255,9 @@ async function reportGeneration() {
 				$main.append(
 					`<div class="row d-flex align-items-center mt-3">
 						<div class="col-1 text-center">
-					    <button class="btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne"
+					    <button class="btn btn-success" id="detalization_report" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne"
 					      style="--bs-btn-padding-y: 3px; --bs-btn-padding-x: 3px; --bs-btn-font-size: 10px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+					      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
                   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                   <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
 								</svg>
@@ -503,7 +503,7 @@ function getListSettings() {
 	$saved_settings.find('option').remove();
 	$.ajax({
 		type: 'POST', url: 'src/getListSettings.php', success: function (response) {
-			let data = jQuery.parseJSON(response);
+			let data = response;
 			for (let key in data) {
 				let reg = /\.json/;
 				if (data[key].match(reg)) {
@@ -525,7 +525,7 @@ function getListPlane() {
 	$saved_plane.find('option').remove();
 	$.ajax({
 		type: 'POST', url: 'src/getListPlane.php', success: function (response) {
-			let data = jQuery.parseJSON(response);
+			let data = response;
 			for (let key in data) {
 				let reg = /\.json/;
 				if (data[key].match(reg)) {

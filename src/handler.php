@@ -79,3 +79,4 @@ while ($record = $Deals->Fetch()) {
 }
 header('Content-Type: application/json');
 echo json_encode($data_deals);
+exit;
