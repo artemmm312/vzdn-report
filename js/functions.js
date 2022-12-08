@@ -216,8 +216,8 @@ async function reportGeneration() {
 		type: 'POST', url: 'src/handler.php', success: function (response) {
 			let data = response;
 			let text_of_date = $season.val() === 'Год' ?
-				`Показатели по плану продаж за ${$year.val()} год :` :
-				`Показатели по плану продаж за ${$month_or_quarter.find('option:selected').text()} ${$year.val()} года :`;
+				`Показатели по плану продаж за ${$year.val()} год "${$type_of_plane.val()}" :` :
+				`Показатели по плану продаж за ${$month_or_quarter.find('option:selected').text()} ${$year.val()} года "${$type_of_plane.val()}" :`;
 			$('.text-date').append(text_of_date);
 			let $main = $('.main');
 			if ($type_of_plane.val() === 'Общий') {
@@ -266,7 +266,7 @@ async function reportGeneration() {
             <div class="col-11 text-center">
               <label for="progress_overall">План "Общий" (${plane_quantity_overall})</label>
               <div class="progress shadow">
-								<div class="progress-bar ${pct_quantity_of_overall > 100 ? 'progress-bar-striped progress-bar-animated' : ''}" id="progress_overall"
+								<div class="progress-bar ${pct_quantity_of_overall >= 100 ? 'progress-bar-striped progress-bar-animated' : ''}" id="progress_overall"
 								 role="progressbar" aria-label="tare_product" style="width: ${pct_quantity_of_overall}%;" aria-valuenow="${pct_quantity_of_overall}" aria-valuemin="0" aria-valuemax="100">
 									${pct_quantity_of_overall}%
 								</div>
@@ -277,14 +277,14 @@ async function reportGeneration() {
 			      <div class="card card-body text-center">
 			        <label for="progress_tare">План "Пэт-тара" (${plane_quantity_of_tare})</label>
 							<div class="progress mb-2 shadow">
-								<div class="progress-bar ${pct_quantity_of_tare > 100 ? 'progress-bar-striped progress-bar-animated' : ''}" id="progress_tare"
+								<div class="progress-bar ${pct_quantity_of_tare >= 100 ? 'progress-bar-striped progress-bar-animated' : ''}" id="progress_tare"
 								 role="progressbar" aria-label="tare_product" style="width: ${pct_quantity_of_tare}%;" aria-valuenow="${pct_quantity_of_tare}" aria-valuemin="0" aria-valuemax="100">
 									${pct_quantity_of_tare}%
 								</div>
 							</div>
 							<label for="progress_drink">План "Вода, напитки" (${plane_quantity_of_drink})</label>
 							<div class="progress mb-3 shadow">
-								<div class="progress-bar ${pct_quantity_of_drink > 100 ? 'progress-bar-striped progress-bar-animated' : ''}" id="progress_drink"
+								<div class="progress-bar ${pct_quantity_of_drink >= 100 ? 'progress-bar-striped progress-bar-animated' : ''}" id="progress_drink"
 								 role="progressbar" aria-label="drink_product" style="width: ${pct_quantity_of_drink}%;" aria-valuenow="${pct_quantity_of_drink}" aria-valuemin="0" aria-valuemax="100">
 									${pct_quantity_of_drink}%
 								</div>
@@ -371,7 +371,7 @@ async function reportGeneration() {
 								`<div class="user_plane_data" data-id="${user_setting.id}">
 									<div class="d-flex flex-column mb-3"> 
 										<h4 class="name">${name}</h4>
-										<label></label>
+										<label>Общее (${plane_of_overall_product})</label>
 										<div class="progress mb-3 shadow">
 											<div class="progress-bar ${pct_overall_product >= 100 ? 'progress-bar-striped progress-bar-animated' : ''}"
 											 role="progressbar" aria-label="tare_product" style="width: ${pct_overall_product}%;" aria-valuenow="${pct_overall_product}" aria-valuemin="0" aria-valuemax="100">
@@ -409,14 +409,14 @@ async function reportGeneration() {
 								<div class="user_plane_data" data-id="${user_setting.id}">
 									<div class="d-flex flex-column mb-3">
 										<h4 class="name">${name}</h4>
-										<label>Пэт-тара</label>
+										<label>Пэт-тара (${plane_of_tare_product})</label>
 										<div class="progress mb-2 shadow">
 											<div class="progress-bar ${pct_tare_product >= 100 ? 'progress-bar-striped progress-bar-animated' : ''}"
 											 role="progressbar" aria-label="tare_product" style="width: ${pct_tare_product}%;" aria-valuenow="${pct_tare_product}" aria-valuemin="0" aria-valuemax="100">
 												${pct_tare_product}%
 											</div>
 										</div>
-										<label>Вода, напитки</label>
+										<label>Вода, напитки (${plane_of_drink_product})</label>
 										<div class="progress mb-3 shadow">
 											<div class="progress-bar ${pct_drink_product >= 100 ? 'progress-bar-striped progress-bar-animated' : ''}"
 											 role="progressbar" aria-label="drink_product" style="width: ${pct_drink_product}%;" aria-valuenow="${pct_drink_product}" aria-valuemin="0" aria-valuemax="100">
