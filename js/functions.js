@@ -125,7 +125,6 @@ async function saveSettings(file_name = '') {
 		'month_or_quarter': $month_or_quarter.val(),
 		'year': $year.val(),
 		'type_of_plane': $type_of_plane.val(),
-		//'type_of_product': $type_of_product.val(),
 	};
 	if ($type_of_plane.val() === 'Общий') {
 		let overall_plane = {
@@ -153,6 +152,8 @@ async function saveSettings(file_name = '') {
 		url: 'src/recordSettings.php',
 		data: {'settings': JSON.stringify(settings), 'file_name': file_name},
 		success: function (response) {
+			if (file_name !== '')
+				alert(response);
 		},
 	})
 }
@@ -167,7 +168,7 @@ let users_plane;
 async function getSettings(file_name = '') {
 	await $.ajax({
 		type: 'POST', url: 'src/readSettings.php', data: {'file_name': file_name}, success: function (response) {
-			let data = jQuery.parseJSON(response);
+			let data = response;
 			general_settings = data[0];
 			$season.selectpicker('val', general_settings.season);
 			choseSeason($season.val());
@@ -229,24 +230,26 @@ async function reportGeneration() {
 				let opportunity = 0;
 				let data_for_usersTable = [];
 				for (let key in data) {
-					let userData = {'name': '', 'tare': 0, 'drink': 0, 'opportunity': 0};
-					for (let deal of data[key]) {
-						opportunity += Number(deal.OPPORTUNITY);
-						userData.name = deal.NAME;
-						userData.opportunity += Number(deal.OPPORTUNITY);
-						let products = deal.PRODUCTS;
-						for (let product of products) {
-							if (product.SECTION_ID === "44") {
-								quantity_of_tare += product.QUANTITY;
-								userData.tare += product.QUANTITY;
-							}
-							if (product.SECTION_ID === "45") {
-								quantity_of_drink += product.QUANTITY;
-								userData.drink += product.QUANTITY;
+					if (data.hasOwnProperty(key)) {
+						let userData = {'name': '', 'tare': 0, 'drink': 0, 'opportunity': 0};
+						for (let deal of data[key]) {
+							opportunity += Number(deal.OPPORTUNITY);
+							userData.name = deal.NAME;
+							userData.opportunity += Number(deal.OPPORTUNITY);
+							let products = deal.PRODUCTS;
+							for (let product of products) {
+								if (product.SECTION_ID === "44") {
+									quantity_of_tare += product.QUANTITY;
+									userData.tare += product.QUANTITY;
+								}
+								if (product.SECTION_ID === "45") {
+									quantity_of_drink += product.QUANTITY;
+									userData.drink += product.QUANTITY;
+								}
 							}
 						}
+						data_for_usersTable.push(userData);
 					}
-					data_for_usersTable.push(userData);
 				}
 				let quantity_of_overall = quantity_of_tare + quantity_of_drink;
 				let pct_quantity_of_overall = ((100 * quantity_of_overall) / plane_quantity_overall).toFixed(2);
@@ -499,17 +502,19 @@ function checkTopUser(userID) {
 let $saved_settings = $('#saved_settings');
 
 //получение списка сохраненных настроек
-function getListSettings() {
+async function getListSettings() {
 	$saved_settings.find('option').remove();
-	$.ajax({
+	await $.ajax({
 		type: 'POST', url: 'src/getListSettings.php', success: function (response) {
 			let data = response;
 			for (let key in data) {
-				let reg = /\.json/;
-				if (data[key].match(reg)) {
-					data[key] = data[key].replace(reg, '');
+				if (data.hasOwnProperty(key)) {
+					let reg = /\.json/;
+					if (data[key].match(reg)) {
+						data[key] = data[key].replace(reg, '');
+					}
+					$saved_settings.append(`<option>${data[key]}</option>`);
 				}
-				$saved_settings.append(`<option>${data[key]}</option>`);
 			}
 			$saved_settings.selectpicker('destroy');
 			$saved_settings.selectpicker('render');
@@ -527,11 +532,13 @@ function getListPlane() {
 		type: 'POST', url: 'src/getListPlane.php', success: function (response) {
 			let data = response;
 			for (let key in data) {
-				let reg = /\.json/;
-				if (data[key].match(reg)) {
-					data[key] = data[key].replace(reg, '');
+				if (data.hasOwnProperty(key)) {
+					let reg = /\.json/;
+					if (data[key].match(reg)) {
+						data[key] = data[key].replace(reg, '');
+					}
+					$saved_plane.append(`<option>${data[key]}</option>`);
 				}
-				$saved_plane.append(`<option>${data[key]}</option>`);
 			}
 			$saved_plane.selectpicker('destroy');
 			$saved_plane.selectpicker('render');

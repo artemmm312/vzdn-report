@@ -8,8 +8,9 @@ if(!empty($_POST['file_name'])) {
 	preg_replace($reg, '', $file_name);
 }
 if($file_name !== '') {
-	$file = "../settings/saved/$file_name.json";
+	$file = dirname(__DIR__) . "/settings/saved/$file_name.json";
 } else {
-	$file = "../settings/lastSettings.json";
+	$file = dirname(__DIR__) . "/settings/lastSettings.json";
 }
+header('Content-Type: application/json');
 readfile ($file,false);

@@ -1,7 +1,6 @@
 //выбор и сразу загрузка сохранённого плана для всех пользователей
 $saved_plane.on('change', async function () {
 	let file_name = $saved_plane.val();
-	console.log(file_name);
 	$('.users_list li').remove();
 	await getSettings(file_name);
 	await saveSettings();
@@ -48,12 +47,13 @@ $load_save.on('click', function () {
 $delete_save.on('click', function () {
 	let file_name = $saved_settings.val()
 	$('#deletion_text').text(`Вы действительно хотите удалить сохраненный план - ${file_name}`);
-	$('#delete_file').one('click', function () {
-		$.ajax({
+	$('#delete_file').one('click', async function () {
+		await $.ajax({
 			type: 'POST', url: 'src/deleteSettings.php', data: {'file_name': file_name}, success: function (response) {
+				alert(response);
 			}
 		});
-		getListSettings();
+		await getListSettings();
 	});
 });
 
@@ -129,6 +129,8 @@ $('#apply').on('click', function () {
 
 //инпут ввода имени сохраняемой настройки
 $saved_name = $('#saved_name');
+//кнопка сохранения настроек(не в главном модальном окне)
+$push_save = $('#push_save');
 
 //дефолтное значение поля ввода имени сохраняемой настройки
 $('#save').on('click', function () {
@@ -144,9 +146,9 @@ $('#save').on('click', function () {
 });
 
 //отключение кнопки сохранения пока название пустое
-if($saved_name.val() === '') {
-	$('#push_save').prop('disabled', true);
-}
+/*if($saved_name.val() === '') {
+	$push_save.prop('disabled', true);
+}*/
 
 //проверка поля ввода имени сохраняемой настройки
 $saved_name.on('change keyup input click', function () {
@@ -156,16 +158,16 @@ $saved_name.on('change keyup input click', function () {
 		$(this).val(text);
 	}
 	if($(this).val() !== '') {
-		$('#push_save').prop('disabled', false);
+		$push_save.prop('disabled', false);
 	} else {
-		$('#push_save').prop('disabled', true);
+		$push_save.prop('disabled', true);
 	}
 });
 
 //кнопка сохранения настройки
-$('#push_save').on('click', function () {
-	let file_name = $('#saved_name').val();
-	saveSettings(file_name);
-	getListSettings();
+$push_save.on('click', async function () {
+	let file_name = $saved_name.val();
+	await saveSettings(file_name);
+	await getListSettings();
 	$saved_settings.selectpicker('val', file_name);
 });

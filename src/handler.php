@@ -3,7 +3,7 @@
 <?php
 \Bitrix\Main\Loader::includeModule('crm');
 
-$fileContent = file_get_contents('../settings/lastSettings.json');
+$fileContent = file_get_contents(dirname(__DIR__) . "/settings/lastSettings.json");
 if (false === $fileContent) {
 	die('не удалось открыть файл');
 }
@@ -79,4 +79,3 @@ while ($record = $Deals->Fetch()) {
 }
 header('Content-Type: application/json');
 echo json_encode($data_deals);
-exit;
