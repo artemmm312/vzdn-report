@@ -23,9 +23,9 @@ if ($saved_settings.val() === null) {
 
 //включение кнопок очистить, загрузить, удалить при выборе в селекте сохранённых настроек
 $saved_settings.on('change', function () {
-		$clear_save.prop('disabled', false);
-		$load_save.prop('disabled', false);
-		$delete_save.prop('disabled', false);
+	$clear_save.prop('disabled', false);
+	$load_save.prop('disabled', false);
+	$delete_save.prop('disabled', false);
 });
 
 //кнопка очистки выбора сохранённой настройки
@@ -135,12 +135,12 @@ $push_save = $('#push_save');
 //дефолтное значение поля ввода имени сохраняемой настройки
 $('#save').on('click', function () {
 	console.log($type_of_plane.val());
-	if($season.val() === 'Месяц' || $season.val() === 'Квартал') {
+	if ($season.val() === 'Месяц' || $season.val() === 'Квартал') {
 		$saved_name.val(`${$month_or_quarter.find('option:selected').text()} ${$year.val()}`);
-	} else if($season.val() === 'Год') {
+	} else if ($season.val() === 'Год') {
 		$saved_name.val(`${$year.val()}`)
 	}
-	if($type_of_plane.val() === 'Общий') {
+	if ($type_of_plane.val() === 'Общий') {
 		$saved_name.val(`${$saved_name.val() + ' Общий'}`);
 	}
 });
@@ -152,7 +152,7 @@ $saved_name.on('change keyup input click', function () {
 		let text = $(this).val().replace(reg, '');
 		$(this).val(text);
 	}
-	if($(this).val() !== '') {
+	if ($(this).val() !== '') {
 		$push_save.prop('disabled', false);
 	} else {
 		$push_save.prop('disabled', true);
