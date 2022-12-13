@@ -145,11 +145,6 @@ $('#save').on('click', function () {
 	}
 });
 
-//отключение кнопки сохранения пока название пустое
-/*if($saved_name.val() === '') {
-	$push_save.prop('disabled', true);
-}*/
-
 //проверка поля ввода имени сохраняемой настройки
 $saved_name.on('change keyup input click', function () {
 	let reg = /[!@#$%^&*()_?<>"'`~;\/\\\[\]|]/g;
