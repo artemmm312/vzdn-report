@@ -219,7 +219,8 @@ async function reportGeneration() {
 			let text_of_date = $season.val() === 'Год' ?
 				`Показатели по плану продаж за ${$year.val()} год "${$type_of_plane.val()}" :` :
 				`Показатели по плану продаж за ${$month_or_quarter.find('option:selected').text()} ${$year.val()} года "${$type_of_plane.val()}" :`;
-			$('.text-date').append(text_of_date);
+			let text = document.createTextNode(text_of_date);
+			$('.text-date').append(text);
 			let $main = $('.main');
 			if ($type_of_plane.val() === 'Общий') {
 				let plane_quantity_of_tare = overall_plane.quantity_of_tare;
