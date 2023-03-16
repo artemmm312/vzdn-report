@@ -231,17 +231,22 @@ async function reportGeneration() {
 				let plane_quantity_overall = Number(plane_quantity_of_tare) + Number(plane_quantity_of_drink);
 				let quantity_of_tare = 0;
 				let quantity_of_drink = 0;
-				let opportunity = 0;
+				let opportunity_BYN = 0;
+				let opportunity_RUB = 0;
 				let data_for_usersTable = [];
 				for (let key in data) {
 					if (data.hasOwnProperty(key)) {
-						let userData = {'name': '', 'tare': 0, 'drink': 0, 'opportunity': 0};
+						let userData = {'name': '', 'tare': 0, 'drink': 0, 'opportunity_BYN': 0, 'opportunity_RUB': 0};
 						for (let deal of data[key]) {
-							opportunity += +deal.OPPORTUNITY;
-							opportunity = +opportunity.toFixed(2);
+							opportunity_BYN += +deal.OPPORTUNITY_BYN;
+							opportunity_BYN = +opportunity_BYN.toFixed(2);
+							opportunity_RUB += +deal.OPPORTUNITY_RUB;
+							opportunity_RUB = +opportunity_RUB.toFixed(2);
 							userData.name = deal.NAME;
-							userData.opportunity += +deal.OPPORTUNITY;
-							userData.opportunity = +userData.opportunity.toFixed(2);
+							userData.opportunity_BYN += +deal.OPPORTUNITY_BYN;
+							userData.opportunity_BYN = +userData.opportunity_BYN.toFixed(2);
+							userData.opportunity_RUB += +deal.OPPORTUNITY_RUB;
+							userData.opportunity_RUB = +userData.opportunity_RUB.toFixed(2);
 							let products = deal.PRODUCTS;
 							for (let product of products) {
 								if (product.SECTION_ID === "44") {
@@ -305,25 +310,30 @@ async function reportGeneration() {
 									${pct_quantity_of_drink}%
 								</div>
 							</div>
-							<div class="row g-2">
-								<div class="col-3">
+							<div class="row g-2 justify-content-center">
+								<div class="col">
 									<div class="border border-info bg-info bg-opacity-25 d-flex justify-content-center align-items-center h-100">
 										<p class="p-2 m-0">Выполненно по "Общему" плану:<br> ${quantity_of_overall} / ${plane_quantity_overall} единиц.</p>
 									</div>
 								</div>
-								<div class="col-3">
+								<div class="col">
 									<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
 										<p class="p-2 m-0">Выполненно по плану "Пэт-тара":<br> ${quantity_of_tare} / ${plane_quantity_of_tare} единиц.</p>
 									</div>
 								</div>
-								<div class="col-3">
+								<div class="col">
 									<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
 										<p class="p-2 m-0">Выполненно по плану "Вода, напитки":<br> ${quantity_of_drink} / ${plane_quantity_of_drink} единиц.</p>
 									</div>
 								</div>
-								<div class="col-3">
+								<div class="col">
 									<div class="border border-success bg-success bg-opacity-25 d-flex justify-content-center align-items-center h-100">
-										<p class="p-2 m-0">На общую сумму:<br> ${opportunity} руб.</p>
+										<p class="p-2 m-0">На общую сумму, BYN:<br> ${opportunity_BYN} руб.</p>
+									</div>
+								</div>
+								<div class="col">
+									<div class="border border-success bg-success bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+										<p class="p-2 m-0">На общую сумму, RUB:<br> ${opportunity_RUB} руб.</p>
 									</div>
 								</div>
 							</div>
@@ -334,7 +344,8 @@ async function reportGeneration() {
 											<th class="text-center">Сотрудник</th>
 											<th class="text-center">Пэт-тара</th>
 											<th class="text-center">Вода, напитки</th>
-											<th class="text-center">Сумма</th>
+											<th class="text-center">Сумма, BYN</th>
+											<th class="text-center">Сумма, RUB</th>
 										</tr>
 									</thead>
 								</table>
@@ -349,7 +360,8 @@ async function reportGeneration() {
 						{data: 'name'},
 						{data: 'tare'},
 						{data: 'drink'},
-						{data: 'opportunity'},
+						{data: 'opportunity_BYN'},
+						{data: 'opportunity_RUB'},
 					],
 				});
 			} else if ($type_of_plane.val() === 'По пользователям') {
@@ -359,14 +371,17 @@ async function reportGeneration() {
 					let plane_of_overall_product = user_setting.overall_product;
 					let plane_of_tare_product = user_setting.tare_product;
 					let plane_of_drink_product = user_setting.drink_product;
-					let opportunity = 0;
+					let opportunity_BYN = 0;
+					let opportunity_RUB = 0;
 					let overall_product = 0;
 					let tare_product = 0;
 					let drink_product = 0;
 					if (user_setting.id in data) {
 						for (let i = 0; i < data[id].length; i++) {
-							opportunity += +data[id][i].OPPORTUNITY;
-							opportunity = +opportunity.toFixed(2);
+							opportunity_BYN += +data[id][i].OPPORTUNITY_BYN;
+							opportunity_BYN = +opportunity_BYN.toFixed(2);
+							opportunity_RUB += +data[id][i].OPPORTUNITY_RUB;
+							opportunity_RUB = +opportunity_RUB.toFixed(2);
 							let products = data[id][i].PRODUCTS;
 							for (let product of products) {
 								overall_product += product.QUANTITY;
@@ -401,25 +416,30 @@ async function reportGeneration() {
 												${pct_overall_product}%
 											</div>
 										</div>
-										<div class="row g-2">
-											<div class="col-3">
+										<div class="row g-2 justify-content-center">
+											<div class="col">
 												<div class="border border-info bg-info bg-opacity-25 d-flex justify-content-center align-items-center h-100">
 													<p class="p-2 m-0">Выполненно по "Общему" плану:<br> ${overall_product} / ${plane_of_overall_product} единиц.</p>
 												</div>
 											</div>
-											<div class="col-3">
+											<div class="col">
 												<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
 													<p class="p-2 m-0">Из "Общего" плана "Пэт-тара" составляет:<br> ${tare_product} единиц.</p>
 												</div>
 											</div>
-											<div class="col-3">
+											<div class="col">
 												<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
 													<p class="p-2 m-0">Из "Общего" плана "Вода, напитки" составляет:<br> ${drink_product} единиц.</p>
 												</div>
 											</div>
-											<div class="col-3">
+											<div class="col">
 												<div class="border border-success bg-success bg-opacity-25 d-flex justify-content-center align-items-center h-100">
-													<p class="p-2 m-0">На общую сумму:<br> ${opportunity} руб.</p>
+													<p class="p-2 m-0">На общую сумму, BYN:<br> ${opportunity_BYN} руб.</p>
+												</div>
+											</div>
+											<div class="col">
+												<div class="border border-success bg-success bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+													<p class="p-2 m-0">На общую сумму, RUB:<br> ${opportunity_RUB} руб.</p>
 												</div>
 											</div>
 										</div>
@@ -446,25 +466,30 @@ async function reportGeneration() {
 												${pct_drink_product}%
 											</div>
 										</div>
-										<div class="row g-2">
-											<div class="col-3">
+										<div class="row g-2 justify-content-center">
+											<div class="col">
 												<div class="border border-info bg-info bg-opacity-25 d-flex justify-content-center align-items-center h-100">
 													<p class="p-2 m-0">Выполненно по плану "Пэт-тара":<br> ${tare_product} / ${plane_of_tare_product} единиц.</p>
 												</div>
 											</div>
-											<div class="col-3">
+											<div class="col">
 												<div class="border border-info bg-info bg-opacity-25 d-flex justify-content-center align-items-center h-100">
 													<p class="p-2 m-0">Выполненно по плану "Вода, напитки":<br> ${drink_product} / ${plane_of_drink_product} единиц.</p>
 												</div>
 											</div>
-											<div class="col-3">
+											<div class="col">
 												<div class="border border-warning bg-warning bg-opacity-25 d-flex justify-content-center align-items-center h-100">
 													<p class="p-2 m-0">Общее количество реализованного товара:<br> ${overall_product} единиц.</p>
 												</div>
 											</div>
-											<div class="col-3">
+											<div class="col">
 												<div class="border border-success bg-success bg-opacity-25 d-flex justify-content-center align-items-center h-100">
-													<p class="p-2 m-0">На общую сумму:<br> ${opportunity} руб.</p>
+													<p class="p-2 m-0">На общую сумму, BYN:<br> ${opportunity_BYN} руб.</p>
+												</div>
+											</div>
+											<div class="col">
+												<div class="border border-success bg-success bg-opacity-25 d-flex justify-content-center align-items-center h-100">
+													<p class="p-2 m-0">На общую сумму, RUB:<br> ${opportunity_RUB} руб.</p>
 												</div>
 											</div>
 										</div>

@@ -47,6 +47,13 @@ function getDataDeal($filter) {
 	$Deals= CCrmDeal::GetListEx([], $filter, false, false, []);
 	$data_deals = [];
 	while ($record = $Deals->Fetch()) {
+		$opportunity_BYN = 0;
+		$opportunity_RUB = 0;
+		if($record['CURRENCY_ID'] === 'BYN') {
+			$opportunity_BYN = $record['OPPORTUNITY'];
+		} elseif ($record['CURRENCY_ID'] === 'RUB') {
+			$opportunity_RUB = $record['OPPORTUNITY'];
+		}
 		$data_products = [];
 		$products = CCrmDeal::LoadProductRows($record['ID']);
 		foreach ($products as $product) {
@@ -61,7 +68,8 @@ function getDataDeal($filter) {
 				'ID' => $record['ID'],
 				'STAGE_ID' => $record['STAGE_ID'],
 				'NAME' => "{$record['ASSIGNED_BY_NAME']} {$record['ASSIGNED_BY_LAST_NAME']}",
-				'OPPORTUNITY' => $record['OPPORTUNITY'],
+				'OPPORTUNITY_BYN' => $opportunity_BYN,
+				'OPPORTUNITY_RUB' => $opportunity_RUB,
 				'ASSIGNED_BY_ID' => $record['ASSIGNED_BY_ID'],
 				'CLOSEDATE' => $record['CLOSEDATE'],
 				'PRODUCTS' => $data_products
